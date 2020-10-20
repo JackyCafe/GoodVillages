@@ -8,6 +8,9 @@ from django_extensions.db.fields import RandomCharField
 
 
 # Create your models here.
+# Group
+class Group(models.Model):
+    group_name = RandomCharField(length=16, unique=True)
 
 
 class UserProfile(models.Model):
@@ -20,7 +23,8 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='userprofile')
     username = models.CharField(max_length=10,verbose_name='姓名')
     authority = models.CharField(max_length=20, choices=AUTHORITY_CHOICE, default='resident')
-    Photo = models.ImageField(upload_to='users/%Y/%m/%d/', null=True, blank=True)
+    photo = models.ImageField(upload_to='users/%Y/%m/%d/', null=True, blank=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='userprofile')
 
     def __str__(self):
         return self.username
@@ -47,21 +51,36 @@ class Task(models.Model):
         return self.task_name
 
 
-# 子任務
+# 每日子任務、團隊子任務
 class SubTask(models.Model):
     task = models.ForeignKey(Task,on_delete=models.CASCADE,)
-    sub_task_title = models.CharField()
-    sub_task_content = models.CharField()
+    sub_task_title = models.CharField(max_length=20)
+    sub_task_content = models.TextField()
+
+    def __str__(self):
+        return  self.sub_task_title
 
 
-
+# 個人任務
 class PersonalTask(models.Model):
-    user = models.ForeignKey()
+    user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,verbose_name='人員')
+    task = models.ForeignKey(Task,on_delete=models.CASCADE,verbose_name='任務')
+    date1 = models.DateField(default=datetime.now)
+
+    def __str__(self):
+        return self.user.username
 
 
+# 個人子任務
+class PersonalSubTask(models.Model):
+    user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,verbose_name='人員')
+    task = models.ForeignKey(Task,on_delete=models.CASCADE,verbose_name='任務')
+    date1 = models.DateField(default=datetime.now)
 
 
-
+class TeamTask(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, verbose_name='任務')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='群組')
 
 
 # 行事曆
@@ -69,11 +88,11 @@ class Calendar(models.Model):
     owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='owner', verbose_name='擁有者')
     title = models.CharField(max_length=64,verbose_name='標題')
     content = RichTextField(verbose_name='說明')
-    Photo = models.ImageField(upload_to='calendars/%Y/%m/%d/', null=True, blank=True,verbose_name='照片')
+    photo = models.ImageField(upload_to='calendars/%Y/%m/%d/', null=True, blank=True,verbose_name='照片')
     slug = RandomCharField(length=8, unique=True, unique_for_date='publish')
     publish = models.DateField(auto_now=True,verbose_name='發布日期')
-    sponsor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sponsor', verbose_name='發起者')
-    participate = models.ManyToManyField(User, verbose_name='參與者')
+    sponsor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sponsor', verbose_name='發起者')
+    participate = models.ManyToManyField(UserProfile, verbose_name='參與者')
     task = models.ManyToManyField(Task, verbose_name="任務")
 
     class Meta:
@@ -81,3 +100,7 @@ class Calendar(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+
+class Account(models.Model):
+    user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,verbose_name='人員')
