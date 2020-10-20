@@ -38,10 +38,30 @@ class Task(models.Model):
     task_start = models.DateField(default=datetime.now,verbose_name='任務起始時間')
     task_end = models.DateField(default=datetime.now,verbose_name='任務結束時間')
     task_type = models.CharField(max_length=12,choices=TASK_CHOICE,default='daily_task',verbose_name='任務型別')
+    point = models.IntegerField(verbose_name='點數')
+
+    class Meta:
+        ordering =['-publish']
+
+    def __str__(self):
+        return self.task_name
 
 
+# 子任務
 class SubTask(models.Model):
+    task = models.ForeignKey(Task,on_delete=models.CASCADE,)
     sub_task_title = models.CharField()
+    sub_task_content = models.CharField()
+
+
+
+class PersonalTask(models.Model):
+    user = models.ForeignKey()
+
+
+
+
+
 
 
 # 行事曆
