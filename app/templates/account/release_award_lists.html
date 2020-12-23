@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %} 懸賞任務列表
+{% endblock %}
+{% block content %}　
+    {% if request.session.authority == 'admin' or  request.session.authority == 'servant' %}
+    <div class="container-fluid no-padding">
+       <div class="row" ><h2>待審核</h2></div>
+       <div class="row" >
+    {% for task in  wait_release_tasks  %}
+            <div class="card">
+                <h5 class="card-header">{{ task.task_name }}</h5>
+                <h4 class="card-text">{{ task.task_content|safe }} </h4>
+                <h6 class="card-footer">{{ task.publish }}  by {{ task.user }}
+                <a class="btn btn-primary" href="{% url 'app:approve_award_task' task.id %}" rel="nofollow">同意</a></h6>
+            </div>
+    {% endfor %}
+       </div>
+        <div class="row" ><h2>已審核未完成</h2></div>
+        {% for task in  wait_accept_tasks %}
+             <div class="card">
+                 <h5 class="card-header">{{ task.task_name }}</h5>
+                <h4 class="card-text">{{ task.task_content|safe }} </h4>
+                <h6 class="card-footer">{{ task.publish }}  by {{ task.user }}
+                <a class="btn btn-primary" href="#" rel="nofollow">同意</a></h6>
+            </div>
+    {% endfor %}
+    </div>
+    {% else %}
+        您沒有權限
+    {% endif %}
+{% endblock %}

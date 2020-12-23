@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}懸賞任務{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+    目前已有任務：
+     <div class="row">
+
+     <a href="#" class="mbutton btn">所有任務</a>
+         <a href="{% url 'app:create_award_task' %}" class="mbutton btn">發布任務</a>
+
+    <a href="{% url 'app:my_award_task' request.user.id %}" class="mbutton btn">我的任務</a>
+        </div>
+
+        <div class="row">我發布的任務</div>
+        {% for task in my_depoly_tasks %}
+
+        <div class="card row">
+        <div class="card-header ">
+            <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
+            {{ task.user }} 有一個 {{ task.task_name }}任務
+            </a>
+        </div>
+            <div class="card-body">
+            <div class="card-text list-group">
+               <li class="list-group-item"> {{ task.task_content|safe }}</li>
+                <li class="list-group-item"> 發布日期　{{ task.publish }} </li>
+            </div>
+                </div>
+        <div class="card-footer">接受任務者:{{ task.accept_man.userprofile }} </div>
+
+    {% endfor %}
+    </div>
+    </div>
+        <div class="row">我接受的任務</div>
+        {% for task in my_accept_tasks %}
+        <div class="card row">
+        <div class="card-header ">
+            <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
+            {{ task.user }} 有一個 {{ task.task_name }}任務
+            </a>
+        </div>
+            <div class="card-body">
+            <div class="card-text list-group">
+               <li class="list-group-item"> {{ task.task_content|safe }}</li>
+                <li class="list-group-item"> 發布日期　{{ task.publish }} </li>
+
+            </div>
+                </div>
+        <div class="card-footer">接受任務者:{{ task.accept_man.userprofile }} </div>
+
+    {% endfor %}
+    </div>
+    </div>
+
+
+{% endblock %}

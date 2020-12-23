@@ -1,0 +1,7 @@
+{% if page.has_previous %}
+    <a href="?page={{ page.previous_page_number }}">上一頁</a>
+{% endif %}
+
+ {% if page.has_next %}
+    <a href="?page={{ page.next_page_number  }}">下一頁</a>
+{% endif %}

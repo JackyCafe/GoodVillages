@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    每日任務
+{% endblock %}
+{% block content %}
+    <div class="container container-fluid">
+        <div class="row">
+               <div class="card w-100" >
+
+                   <div class="card-body">
+                       {% if finish_task_date == 0 %}
+                           <img class="card-img personal_task_finish" src="{% static 'drawable/awards/0.png' %}"/>
+                       {% elif  finish_task_date == 1 %}
+                           <img class="card-img personal_task_finish" src="{% static 'drawable/awards/1.png' %}"/>
+                       {% elif  finish_task_date == 2 %}
+                           <img class="card-img personal_task_finish" src="{% static 'drawable/awards/2.png' %}"/>
+                       {% elif finish_task_date == 3 %}
+                           <img class="card-img personal_task_finish" src="{% static 'drawable/awards/3.png' %}"/>
+                       {% elif finish_task_date == 4 %}
+                           <img class="card-img personal_task_finish" src="{% static 'drawable/awards/4.png' %}"/>
+                       {% elif finish_task_date == 5 %}
+                           <img class="card-img personal_task_finish" src="{% static 'drawable/awards/5.png' %}"/>
+                       {% elif finish_task_date == 6 %}
+                           <img class="card-img personal_task_finish" src="{% static 'drawable/awards/6.png' %}"/>
+                       {% elif finish_task_date == 7 %}
+                            <img class="card-img personal_task_finish" src="{% static 'drawable/awards/7.png' %}"/>
+                       {% endif %}
+                   </div>
+                    <div class="card-header">
+                        <h4 style="font-size: 120%">每日任務<P>累積點數:{{points }}</h4>
+                        </div>
+               </div>
+
+
+
+    <div class="card w-100">
+        <div class="card-header"> 每日任務</div>
+             {% for personal_task in personal_tasks %}
+                <div class="card" >
+                <div class="card-body card-text text-center  ">
+                        <img src="{% static 'drawable/person_task_bg.png' %}"
+                             alt="" class="card-img" style="width:100%;height:70px ">
+                        <h4 > <span class="card-img-overlay" style="color:#005bfd;padding-top: 40px">
+                            <a href={{personal_task.generate_qr_code  }}> {{ personal_task.task }}</a></span></h4>
+                </div>
+                </div>
+            {% endfor %}
+            </div>
+</div>
+        </div>
+     </div>
+{% endblock %}

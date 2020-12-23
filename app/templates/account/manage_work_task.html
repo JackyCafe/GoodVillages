@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}工作任務{% endblock %}
+{% block content %}
+    {% if request.session.authority == 'admin' %}
+    <a href="{% url 'app:create_work_task' %}" class="mbutton btn">發布任務</a>
+    {% endif %}
+    {% for task in tasks %}
+        <div class="card">
+        <div class="card-header ">
+            <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
+            {{ task.user }} 有一個 {{ task.task_name }}任務
+            </a>
+
+        </div>
+            <div class="card-body">
+            <div class="card-text"> {{ task.task_content|safe }}
+             發布日期：{{ task.publish }}</div>
+                </div>
+        <h7 class="card-footer">
+            接受任務:{{ task.accept_man.userprofile }}
+        </h7>
+        </div>
+    {% endfor %}
+{% endblock %}

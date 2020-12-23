@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load task_tags %}
+{% block title %}
+
+{% endblock %}
+{% block content %}
+    {% for task in tasks %}
+        {{ task.task_name }}
+    {% endfor %}
+    {% for user in users %}
+        {{ user }}
+    {% endfor %}
+        {{ group_id }}
+        {{ user_id }}
+{% endblock %}

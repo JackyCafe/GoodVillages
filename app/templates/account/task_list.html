@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}
+    任務
+{% endblock %}
+{% block content %}
+
+    <table class="table">
+    <thead></thead>
+    <tr>
+        <th scope="row">任務名稱</th>
+        <th scope="row">任務內容</th>
+        <th scope="row">發布日期</th>
+        <th scope="row">任務形式</th>
+        <th scope="row">任務有效性</th>
+        <th scope="row">點數</th>
+        <td scope="row">功能</td>
+
+
+    </tr>
+    <tbody>
+    {% for task in tasks %}
+        <tr>
+        <td>{{ task.task_name|safe }}</td>
+        <td>{{ task.task_content|safe }}</td>
+        <td class="date">{{ task.publish|safe }}</td>
+        <td>{{ task.task_type|safe }}</td>
+           {% if task.is_vaild == True %}
+            <td><input type="radio" checked>  </td>
+            {% else %}
+         <td><input type="radio" >  </td>
+            {% endif %}
+        <td>{{ task.point|safe }}</td>
+
+{#            <td><a href="{{ task.addSubTask_url }}" class="button btn-danger">創建子任務</a></td>#}
+            <td><a href="{{ task.task_edit}}" class="button btn-danger">編輯主任務</a></td>
+            {% if task.is_vaild == 1 %}
+            <td><a href="{{ task.invalidTask_url  }}" class="button">任務失效</a></td>
+            {% else %}
+            <td><a href="{{ task.invalidTask_url }}" class="button">任務生效</a></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {% include "pagination.html" with page=tasks %}
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} 好好聚落
+
+{% endblock %}
+{% block content %}
+     {% if request.session.authority == 'resident' %}
+
+    <div class=".container-fluid" >
+<div class="row" >
+<div class="col-md-offset-4" >
+    <img src="{% static 'drawable/calendar.jpg' %}"style="width: 100%">
+</div>
+
+
+
+</div>
+    </div>
+    {% endif %}
+
+{% endblock %}

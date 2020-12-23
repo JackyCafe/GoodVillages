@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load qr_code %}
+{% block title %}
+    {{ tasks.user }}
+{% endblock %}
+{% block content %}
+
+    <div class="container-fluid">
+    <div class="row">
+        <div class="card">
+            <div class="card-title">
+    <h4>恭喜你完成今日任務，快拿去給管理員登記吧</h4></div>
+            <div class="card-body">
+                <img class="card-img" src="{% qr_url_from_text  url  %}" alt="Hello World!">
+                </div>
+    </div>
+    </div>
+    </div>
+
+{% endblock %}

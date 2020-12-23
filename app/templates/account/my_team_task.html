@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load task_tags %}
+{% block title %}
+
+    我的團隊任務
+{% endblock %}
+{% block content %}
+    <a href="{% url 'app:create_group' %}">我要組隊</a>
+   <p> 目前已有隊伍</p>
+    <div class="card-group">
+        <div class="card">
+            {% for task in tasks %}
+                <div class="card-body" style="background-color: #9efcb5;" >{{ task.task_name }}</div>
+                {%for groups in task.group_list %}
+                    <div class="card-header" style="background-color: #399699">
+                        {{ task.task_id }}
+                        {{ groups.group_id }}
+                        <a href="{% url 'app:manage_team_task' task.task_id groups.group_id user_id   %}"> {{ groups.group }}</a>
+                    </div>
+
+                    <div class="card-body"><ul class="list-group">
+                    {% for user in groups.users %}
+                        <li  class="list-group-item">{{ user }}</li>
+                    {% endfor %}
+                    </ul>
+                    </div>
+                {% endfor %}
+
+            {% endfor %}
+
+            </div> {#  <div class="card"> #}
+    </div>{#    <div class="card-group">#}
+
+{% endblock %}

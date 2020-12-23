@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %} 發布懸賞任務
+{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+
+        {{ award_form.media }}
+        {{ award_form.as_p }}
+        <input type="submit" value="發布">
+
+    </form>
+{% endblock %}

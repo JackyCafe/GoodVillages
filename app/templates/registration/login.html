@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Login-in
+
+{% endblock %}
+{% block content %}
+    {%if form.errors  %}
+        帳號或密碼錯誤
+    {% else %}
+        請登入
+    {% endif %}
+        <form action="{% url 'app:login' %}" method="post">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <p><input type="submit" value="登入"></p>
+        </form>
+{% endblock %}

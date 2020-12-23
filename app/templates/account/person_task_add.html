@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+    新增個人任務
+{% endblock %}
+{% block content %}
+    <form method="post" >
+        {% csrf_token %}
+
+        {{ person_task_form.as_p }}
+        <input type="submit" value="送出">
+
+    </form>
+{% endblock %}
