@@ -4,11 +4,8 @@
     <div class="container-fluid">
     目前已有任務：
      <div class="row">
-     <a href="#" class="mbutton btn">所有任務</a>
-         <a href="{% url 'app:create_award_task' %}" class="mbutton btn">發布任務</a>
 
-    <a href="{% url 'app:my_award_task' request.user.id %}" class="mbutton btn">我的任務</a>
-        </div>
+         </div>
     <div class="row">
         {% for task in tasks %}
         <div class="card">

@@ -526,9 +526,11 @@ def approve_award_task(request,award_task_id):
     return render(request, 'account/release_award_lists.html', context)
 
 
+#接受懸賞任務
 def accept_award_task(request,award_task_id,user_id):
     user = User.objects.get(id = user_id)
-    task :MyAwardTask = MyAwardTask.objects.filter(approve_man_id__isnull=False).all().get(id = award_task_id)
+    #從MyAwardTask 中找出approve_man不為空的
+    task: MyAwardTask = MyAwardTask.objects.filter(approve_man_id__isnull=False).all().get(id=award_task_id)
     if not task :
        return  HttpResponse('未經授權')
     task.accept_man = user
@@ -538,6 +540,14 @@ def accept_award_task(request,award_task_id,user_id):
     wait_accept_tasks = MyAwardTask.objects.filter(approve_man_id__isnull=False).filter(accept_man__isnull=True).all()
     context = {'wait_release_tasks': wait_release_tasks, 'wait_accept_tasks': wait_accept_tasks}
     return render(request, 'account/manage_award_task.html', context)
+
+
+# 已發布任務
+def depoly_award_task(request):
+    tasks: MyAwardTask = MyAwardTask.objects.filter(approve_man_id__isnull=False).all()
+    context = {'tasks': tasks }
+    log(context)
+    return render(request, 'account/depoly_award_task.html', context)
 
 
 def my_award_task(request,user_id):
@@ -550,7 +560,8 @@ def my_award_task(request,user_id):
 def manage_work_task(request):
     tasks = WorkTask.objects.all()
     context = {'tasks': tasks}
-    return render(request, 'account/manage_work_task.html', context)
+    return render(request, 'account/manage_award_task.html', context)
+
 
 
 def create_work_task(request):
@@ -558,12 +569,11 @@ def create_work_task(request):
     work_form : WorkTaskForm()
     if request.method == 'POST':
         work_form = WorkTaskForm(request.POST)
-        work_task = work_form.save()
-
+        work_form.save()
         return redirect(reverse('app:manage_work_task'))
     else:
         user = User.objects.get(id=user_id)
         userprofile = user.userprofile
-        work_form = WorkTaskForm(initial={'userprofile': userprofile})
-        context = {'work_form':work_form}
+        worktask_form = WorkTaskForm(initial={'userprofile': userprofile})
+        context = {'worktask_form':worktask_form}
     return render(request,'account/create_work_task.html',context)

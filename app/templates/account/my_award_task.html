@@ -5,7 +5,7 @@
     目前已有任務：
      <div class="row">
 
-     <a href="#" class="mbutton btn">所有任務</a>
+     <a href="#" class="mbutton btn">已發布任務</a>
          <a href="{% url 'app:create_award_task' %}" class="mbutton btn">發布任務</a>
 
     <a href="{% url 'app:my_award_task' request.user.id %}" class="mbutton btn">我的任務</a>
@@ -16,7 +16,7 @@
 
         <div class="card row">
         <div class="card-header ">
-            <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
+            <a href="{% url 'app:depoly_award_task' %}">
             {{ task.user }} 有一個 {{ task.task_name }}任務
             </a>
         </div>
@@ -35,9 +35,9 @@
         {% for task in my_accept_tasks %}
         <div class="card row">
         <div class="card-header ">
-            <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
+{#            <a href="{% url 'app:accept_award_task' task.id request.user.id %}">#}
             {{ task.user }} 有一個 {{ task.task_name }}任務
-            </a>
+{#            </a>#}
         </div>
             <div class="card-body">
             <div class="card-text list-group">

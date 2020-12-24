@@ -46,6 +46,7 @@ urlpatterns = [
     path('release_award_task', views.release_award_task, name='release_award_task'),
     path('approve_award_task/<int:award_task_id>', views.approve_award_task, name='approve_award_task'),
     path('accept_award_task/<int:award_task_id>/<int:user_id>', views.accept_award_task, name='accept_award_task'),
+    path('depoly_award_task/', views.depoly_award_task, name='depoly_award_task'),
     path('my_award_task/<int:user_id>',views.my_award_task,name = 'my_award_task'),
     path('manage_work_task/',views.manage_work_task,name ='manage_work_task'),
     path('create_work_task/', views.create_work_task, name='create_work_task'),
