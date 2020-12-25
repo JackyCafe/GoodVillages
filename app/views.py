@@ -577,3 +577,10 @@ def create_work_task(request):
         worktask_form = WorkTaskForm(initial={'userprofile': userprofile})
         context = {'worktask_form':worktask_form}
     return render(request,'account/create_work_task.html',context)
+
+
+def accept_work_task(request,task_id,user_id):
+    tasks = WorkTask.objects.get(id = user_id)
+
+    return HttpResponse('媽~我在這裡~')
+    # return (request,'account/accept_work_task.html',)
