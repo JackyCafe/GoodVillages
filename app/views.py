@@ -11,7 +11,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
     PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm
-from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask
+from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
+    MyWorkTask
 from django.core import serializers
 import random
 import logging
@@ -38,30 +39,6 @@ def dashboard(request):
     user = request.user.id
 
     personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
-
-    # 今天沒有每日任務
-    # 今天 如果沒有 每日任務，由系統產生一個
-    #
-    if personal_tasks.count() == 0:
-        tasks = Task.objects.filter(is_vaild=True).all()
-        logger.info(tasks.count())
-        count = tasks.count()
-        ids = []
-        i = 0
-        #  隨機挑選不重複的每日任務
-        while i < 3:
-            id = random.randint(1, count - 1)
-            if id not in ids:
-                ids.append(id)
-                task = Task.objects.get(id=id)
-                personal_task = PersonalTask()
-                personal_task.user = request.user.userprofile
-                personal_task.task = task
-                personal_task.point = task.point
-                personal_task.save()
-                i = i + 1
-        personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
-
     return render(request,
                   'account/dashboard.html',
                   {'section': 'dashboard',
@@ -70,6 +47,37 @@ def dashboard(request):
                    }
 
                   )
+    # 今天沒有每日任務
+    # 今天 如果沒有 每日任務，由系統產生一個
+    #
+    # if personal_tasks.count() == 0:
+    #     tasks = Task.objects.filter(is_vaild=True).all()
+    #     logger.info(tasks.count())
+    #     count = tasks.count()
+    #     ids = []
+    #     i = 0
+    #     #  隨機挑選不重複的每日任務
+    #     while i < 3:
+    #         id = random.randint(1, count - 1)
+    #         if id not in ids:
+    #             ids.append(id)
+    #             task = Task.objects.get(id=id)
+    #             personal_task = PersonalTask()
+    #             personal_task.user = request.user.userprofile
+    #             personal_task.task = task
+    #             personal_task.point = task.point
+    #             personal_task.save()
+    #             i = i + 1
+    #     personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
+    #
+    # return render(request,
+    #               'account/dashboard.html',
+    #               {'section': 'dashboard',
+    #                'authority': authority,
+    #                'personal_tasks': personal_tasks
+    #                }
+    #
+    #               )
 
 
 # 處理user 登入介面
@@ -580,7 +588,10 @@ def create_work_task(request):
 
 
 def accept_work_task(request,task_id,user_id):
-    tasks = WorkTask.objects.get(id = user_id)
-
+    tasks = WorkTask.objects.get(id = task_id)
+    user = UserProfile.objects.get(id = user_id)
+    my_worktask = MyWorkTask.objects.create(user=user,task=tasks)
+    my_worktask.save()
+    log(my_worktask)
     return HttpResponse('媽~我在這裡~')
     # return (request,'account/accept_work_task.html',)
