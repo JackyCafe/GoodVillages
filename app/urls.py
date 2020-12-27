@@ -50,6 +50,6 @@ urlpatterns = [
     path('my_award_task/<int:user_id>',views.my_award_task,name = 'my_award_task'),
     path('manage_work_task/',views.manage_work_task,name ='manage_work_task'),
     path('create_work_task/', views.create_work_task, name='create_work_task'),
-    path('accept_work_task/<int:task_id>/<int:user_id>', views.accept_work_task, name='accept_work_task'),
+    path('accept_work_task/<int:task_id>/<slug:task>', views.accept_work_task, name='accept_work_task'),
 
 ]

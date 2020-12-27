@@ -7,7 +7,7 @@
     {% for task in tasks %}
         <div class="card">
         <div class="card-header ">
-            <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
+            <a href="{{ task.getUrl }} ">
             {{ task.user }} 有一個 {{ task.task_name }}任務
             </a>
 
