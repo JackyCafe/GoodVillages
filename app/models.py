@@ -193,6 +193,9 @@ class WorkTask(models.Model):
     publish = models.DateField(default=timezone.now, verbose_name='任務發布時間')
     point = models.IntegerField(default=0,verbose_name='獲得點數')
 
+    def getUrl(self):
+        return reverse('app:accept_work_task', args=[self.id, self.slug])
+
     def __str__(self):
         return self.task_name
 
@@ -200,13 +203,14 @@ class WorkTask(models.Model):
 class MyWorkTask(models.Model):
     user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,related_name='myworktask_accepter',verbose_name='任務接受者')
     task = models.ForeignKey(WorkTask,on_delete=models.CASCADE,related_name='myworktask',verbose_name='任務名稱')
-    date = models.DateField(auto_created=True)
-    start_time = models.DateField(auto_now_add=False,verbose_name='任務開始時間')
-    end_time = models.DateField(auto_now_add=False,verbose_name='任務結束時間')
+    slug = RandomCharField(length=32, unique=True, unique_for_date='publish')
+    date = models.DateField(auto_created=True,null=True)
+    start_time = models.DateField(auto_now_add=False,verbose_name='任務開始時間',null=True)
+    end_time = models.DateField(auto_now_add=False,verbose_name='任務結束時間',null=True)
     point = models.IntegerField(default=0, verbose_name='獲得點數')
 
     def __str__(self):
-        return  self.task
+        return  self.task.task_name
 
 # 行事曆
 # class Calendar(models.Model):
