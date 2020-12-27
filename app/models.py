@@ -207,10 +207,17 @@ class MyWorkTask(models.Model):
     date = models.DateField(auto_created=True,null=True)
     start_time = models.DateField(auto_now_add=False,verbose_name='任務開始時間',null=True)
     end_time = models.DateField(auto_now_add=False,verbose_name='任務結束時間',null=True)
+    isfinish = models.BooleanField(default=False)
     point = models.IntegerField(default=0, verbose_name='獲得點數')
 
     def __str__(self):
         return  self.task.task_name
+
+    def startCount(self):
+        return reverse('app:worktask_start_count',args=[self.slug])
+
+    def endCount(self):
+        return reverse('app:worktask_end_count',args=[self.slug])
 
 # 行事曆
 # class Calendar(models.Model):

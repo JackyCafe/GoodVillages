@@ -585,11 +585,30 @@ def accept_work_task(request,task_id,task):
     user = UserProfile.objects.get(id = user_id)
 
     date = datetime.now()
-    worktasks,created = MyWorkTask.objects.get_or_create(user_id=user_id,task_id=task_id)
+    worktasks,created = MyWorkTask.objects.get_or_create(user_id=user_id,task_id=task_id
+                                                         ,isfinish =False
+                                                         )
+    log(created)
     if created :
        worktasks.date =date
        worktasks.save()
-    log(created)
-    log(worktasks)
-    # return (request, 'account/accept_worktask.html')
-    return HttpResponse('Ma~')
+
+    context = {'worktasks':worktasks}
+    return render(request, 'account/accept_worktask.html',context)
+
+
+def worktask_start_count(request,task):
+    worktasks = get_object_or_404(MyWorkTask,slug=task)
+    worktasks.start_time = datetime.now()
+    worktasks.save()
+    context = {'worktasks': worktasks}
+    return render(request, 'account/accept_worktask.html',context)
+
+
+def worktask_end_count(request,task):
+    worktasks = get_object_or_404(MyWorkTask, slug=task)
+    worktasks.end_time = datetime.now()
+    worktasks.isfinish =True
+    worktasks.save()
+    context = {'worktasks': worktasks}
+    return render(request, 'account/accept_worktask.html', context)

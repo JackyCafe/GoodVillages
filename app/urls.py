@@ -51,5 +51,6 @@ urlpatterns = [
     path('manage_work_task/',views.manage_work_task,name ='manage_work_task'),
     path('create_work_task/', views.create_work_task, name='create_work_task'),
     path('accept_work_task/<int:task_id>/<slug:task>', views.accept_work_task, name='accept_work_task'),
-
+    path('worktask_start_count/<slug:task>',views.worktask_start_count,name='worktask_start_count'),
+    path('worktask_end_count/<slug:task>',views.worktask_end_count,name='worktask_end_count'),
 ]
