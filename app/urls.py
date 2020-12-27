@@ -53,4 +53,5 @@ urlpatterns = [
     path('accept_work_task/<int:task_id>/<slug:task>', views.accept_work_task, name='accept_work_task'),
     path('worktask_start_count/<slug:task>',views.worktask_start_count,name='worktask_start_count'),
     path('worktask_end_count/<slug:task>',views.worktask_end_count,name='worktask_end_count'),
+    path('worktask_vaildation/<slug:task>', views.worktask_vaildation, name='worktask_vaildation'),
 ]

@@ -219,6 +219,9 @@ class MyWorkTask(models.Model):
     def endCount(self):
         return reverse('app:worktask_end_count',args=[self.slug])
 
+    def vaildation(self):
+        return reverse('app:worktask_vaildation',args=[self.slug])
+
 # 行事曆
 # class Calendar(models.Model):
 #     owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='owner', verbose_name='擁有者')

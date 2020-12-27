@@ -612,3 +612,10 @@ def worktask_end_count(request,task):
     worktasks.save()
     context = {'worktasks': worktasks}
     return render(request, 'account/accept_worktask.html', context)
+
+
+def worktask_vaildation(request,task):
+    worktasks = get_object_or_404(MyWorkTask, slug=task)
+    worktasks.isfinish =True
+    worktasks.save()
+    return render(request, 'account/accept_worktask.html', context)
