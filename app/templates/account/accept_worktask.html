@@ -3,7 +3,29 @@
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
+        <div class="row">
+             <div class="card-group">
+            <div class="card">
+                <div class="card-header">{{ worktasks.task }}  by {{ worktasks.user }}</div>
+                <div class="card-body">{{ worktasks.task.task_content|safe }}
+                    <p> {% if worktasks.start_time %}工作開始{{ worktasks.start_time }} {% endif %}</p>
+                    <p>{% if worktasks.end_time %} 工作結束{{worktasks.end_time}}
+                        <p>本次工作{{ total_time }}</p>
+                    {% endif %}
 
+                    </p>
+                </div>
 
+                <div class="card-footer">
+                    {% if worktasks.start_time is null %}
+                      <a href={{ worktasks.startCount }} class="button" >工作計時</a>
+                        {% else %}
+                      <a href="{{ worktasks.endCount }}" class="button" >結束計時</a>
+                    {% endif %}
+                      <a href={{ worktasks.vaildation }} class="button" >工作認證</a>
+                </div>
+            </div>
+             </div>
+        </div>
     </div>
 {% endblock %}

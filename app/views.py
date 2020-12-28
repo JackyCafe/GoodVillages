@@ -585,11 +585,44 @@ def accept_work_task(request,task_id,task):
     user = UserProfile.objects.get(id = user_id)
 
     date = datetime.now()
-    worktasks,created = MyWorkTask.objects.get_or_create(user_id=user_id,task_id=task_id)
+    worktasks,created = MyWorkTask.objects.get_or_create(user_id=user_id,task_id=task_id
+                                                         ,isfinish =False
+                                                         )
+    log(created)
     if created :
        worktasks.date =date
        worktasks.save()
-    log(created)
-    log(worktasks)
-    # return (request, 'account/accept_worktask.html')
-    return HttpResponse('Ma~')
+
+    context = {'worktasks':worktasks}
+    return render(request, 'account/accept_worktask.html',context)
+
+
+def worktask_start_count(request,task):
+    worktasks = get_object_or_404(MyWorkTask,slug=task)
+    worktasks.start_time = datetime.now()
+    worktasks.save()
+    context = {'worktasks': worktasks}
+    return render(request, 'account/accept_worktask.html',context)
+
+
+def worktask_end_count(request,task):
+    worktasks = get_object_or_404(MyWorkTask, slug=task)
+    worktasks.end_time = datetime.now()
+    worktasks.isfinish =True
+    worktasks.save()
+    log(worktasks.end_time)
+    log(worktasks.start_time)
+    diff_time = (worktasks.end_time-worktasks.start_time)
+    hours,remainer = divmod(diff_time.total_seconds(),3600)
+    minutes,seconds = divmod(remainer,60)
+    total_time = f'{int(hours)} 小時 {int(minutes)} 分'
+    context = {'worktasks': worktasks,'total_time':total_time}
+    return render(request, 'account/accept_worktask.html', context)
+
+
+def worktask_vaildation(request,task):
+    worktasks = get_object_or_404(MyWorkTask, slug=task)
+    worktasks.isfinish =True
+    worktasks.save()
+    context = {'worktasks': worktasks}
+    return render(request, 'account/accept_worktask.html', context)
