@@ -12,7 +12,7 @@ from django.urls import reverse
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
     PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
-    MyWorkTask
+    MyWorkTask, Account
 import random
 import logging
 
@@ -259,10 +259,11 @@ def generate_qr_code(request, id, task):
 
 
 # 掃QR_CODE 網址，認證工作達成
+#
 def update_personal_task(request, id, task):
+
     tasks = get_object_or_404(PersonalTask, id=id, slug=task)
     tasks.finish_date = datetime.today().date()
-    # +timedelta(days=1)
     tasks.save()
     return HttpResponse(task)
 
@@ -284,9 +285,9 @@ def my_personal_tasks(request):
     authority = request.user.userprofile.authority
     request.session['authority'] = authority
     request.session['user'] = request.user.id
-    user = request.user.id
+    user = request.user
 
-    personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
+    personal_tasks = PersonalTask.objects.filter(user=user_id).filter(assign_date=datetime.today().date())
 
     # 今天沒有每日任務
     # 今天 如果沒有 每日任務，由系統產生一個
@@ -313,11 +314,27 @@ def my_personal_tasks(request):
 
     finish_date = []
     points = 0
+    #計算點數
     person_tasks = list(PersonalTask.personal_task_award.filter(user=user_id).values())
     for person_task in person_tasks:
         points += int(person_task['point'])
+        # task_id = person_task['id']
+        # # 把personal is_award update 為True
+        # task = PersonalTask.objects.get(id=task_id)
+        # task.is_award = True
+        # task.save()
+        # #新增至個人帳號
+        # account = Account.objects.create(user = user,deposit=int(person_task['point']),transaction_date=datetime.now(),
+        #                                  transaction_memo='工作任務')
+        # account.save()
         if person_task['finish_date'] not in finish_date:
             finish_date.append(person_task['finish_date'])
+
+
+    ptasks = PersonalTask.personal_task_award.filter(is_award=False).filter(user = user_id)
+    for pt in ptasks:
+        log(pt.task)
+
     context = {'finish_task_date': len(finish_date), 'points': points,
                'section': 'dashboard',
                'authority': authority,
@@ -472,8 +489,11 @@ def manage_team_task(request, task_id, group_id, user_id):
 
 
 def manage_award_task(request):
-    tasks = MyAwardTask.objects.filter(approve_man_id__isnull=False).all()
-    context = {'tasks': tasks}
+    # wait_release_tasks =  MyAwardTask.objects.filter(approve_man_id__isnull=False).all()
+    wait_release_tasks =  MyAwardTask.objects.filter(approve_man_id__isnull=True).all()
+    wait_accept_tasks = MyAwardTask.objects.filter(approve_man_id__isnull=False).filter(accept_man__isnull=True)
+    accept_tasks = MyAwardTask.objects.filter(approve_man_id__isnull=False).filter(accept_man__isnull=False)
+    context = {'wait_release_tasks':wait_release_tasks,'wait_accept_tasks':wait_accept_tasks,'accept_tasks':accept_tasks}
     return render(request, 'account/manage_award_task.html', context)
 
 
@@ -485,13 +505,16 @@ def create_award_task(request):
     if request.method == 'POST':
         award_form = MyAwardTaskForm(request.POST)
         if award_form.is_valid():
+            log('here')
             cd = award_form.cleaned_data
             mytask = MyAwardTask.objects.create(**cd)
             mytask.user = UserProfile.objects.get(id=user_id)
             mytask.save()
-            tasks = MyAwardTask.objects.filter(approve_man_id__isnull=False).all()
+            tasks = MyAwardTask.objects.filter(approve_man_id__isnull=True).all()
             context = {'tasks': tasks}
-            return render(request, 'account/manage_award_task.html', context)
+            return redirect(reverse('app:manage_award_task'))
+
+            # return render(request, 'account/manage_award_task.html', context)
     else:
         user = User.objects.get(id=user_id)
         userprofile = user.userprofile
@@ -542,14 +565,17 @@ def accept_award_task(request,award_task_id,user_id):
     return render(request, 'account/manage_award_task.html', context)
 
 
-# 已發布任務
+# 已所有發布任務
 def depoly_award_task(request):
     tasks: MyAwardTask = MyAwardTask.objects.filter(approve_man_id__isnull=False).all()
     context = {'tasks': tasks }
     log(context)
-    return render(request, 'account/depoly_award_task.html', context)
+    return render(request, 'account/my_award_task.html', context)
+
+    # return render(request, 'account/depoly_award_task.html', context)
 
 
+#我的任務，含我發布的任務及我接收的任務
 def my_award_task(request,user_id):
     my_depoly_tasks = MyAwardTask.objects.filter(user_id = user_id)
     my_accept_tasks = MyAwardTask.objects.filter(accept_man_id=user_id)

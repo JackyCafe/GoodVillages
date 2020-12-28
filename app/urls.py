@@ -41,13 +41,15 @@ urlpatterns = [
     path('create_group/', views.create_group, name='create_group'),
     path('add_team_task/<int:user_id>/<int:group_id>',views.add_team_task,name='add_team_task'),
     path('manage_team_task/<int:task_id>/<int:group_id>/<int:user_id>/', views.manage_team_task, name='manage_team_task'),
-    path('manage_award_task/', views.manage_award_task, name='manage_award_task'),
-    path('create_award_task',views.create_award_task, name= 'create_award_task'),
-    path('release_award_task', views.release_award_task, name='release_award_task'),
+    #懸賞任務
+    path('manage_award_task/', views.manage_award_task, name='manage_award_task'),#懸賞主頁
+    path('create_award_task',views.create_award_task, name= 'create_award_task'),# 發布任務
+    path('release_award_task', views.release_award_task, name='release_award_task'),#管理者approve 任務
     path('approve_award_task/<int:award_task_id>', views.approve_award_task, name='approve_award_task'),
-    path('accept_award_task/<int:award_task_id>/<int:user_id>', views.accept_award_task, name='accept_award_task'),
+    path('accept_award_task/<int:award_task_id>/<int:user_id>', views.accept_award_task, name='accept_award_task'),#接受任務
     path('depoly_award_task/', views.depoly_award_task, name='depoly_award_task'),
-    path('my_award_task/<int:user_id>',views.my_award_task,name = 'my_award_task'),
+    path('my_award_task/<int:user_id>',views.my_award_task,name = 'my_award_task'),#我的任務
+    #工作任務
     path('manage_work_task/',views.manage_work_task,name ='manage_work_task'),
     path('create_work_task/', views.create_work_task, name='create_work_task'),
     path('accept_work_task/<int:task_id>/<slug:task>', views.accept_work_task, name='accept_work_task'),
