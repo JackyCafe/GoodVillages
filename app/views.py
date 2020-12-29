@@ -314,26 +314,25 @@ def my_personal_tasks(request):
 
     finish_date = []
     points = 0
-    #計算點數
-    person_tasks = list(PersonalTask.personal_task_award.filter(user=user_id).values())
+    #計算點數，完成工作所得點數
+    person_tasks = list(PersonalTask.objects.filter(finish_date=datetime.today()).filter(user = user_id).values())
     for person_task in person_tasks:
         points += int(person_task['point'])
-        # task_id = person_task['id']
-        # # 把personal is_award update 為True
-        # task = PersonalTask.objects.get(id=task_id)
-        # task.is_award = True
-        # task.save()
-        # #新增至個人帳號
-        # account = Account.objects.create(user = user,deposit=int(person_task['point']),transaction_date=datetime.now(),
-        #                                  transaction_memo='工作任務')
-        # account.save()
         if person_task['finish_date'] not in finish_date:
-            finish_date.append(person_task['finish_date'])
+            finish_date.append(person_task['finish_date']) #秀點數
 
-
-    ptasks = PersonalTask.personal_task_award.filter(is_award=False).filter(user = user_id)
+    #點數轉入個人帳戶.
+    ptasks = list(PersonalTask.personal_task_award.filter(is_award=False).filter(user = user_id).values())
     for pt in ptasks:
-        log(pt.task)
+        task_id = person_task['id']
+        # 把personal is_award update 為True
+        task = PersonalTask.objects.get(id=task_id)
+        task.is_award = True
+        task.save()
+        #新增至個人帳號
+        account = Account.objects.create(user = user,deposit=int(person_task['point']),transaction_date=datetime.now(),
+                                         transaction_memo='工作任務')
+        account.save()
 
     context = {'finish_task_date': len(finish_date), 'points': points,
                'section': 'dashboard',

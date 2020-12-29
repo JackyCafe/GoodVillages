@@ -31,6 +31,7 @@ class Account(models.Model):
     transaction_memo = models.CharField(default=' ',max_length=40,verbose_name='交易內容')
     deposit = models.IntegerField(verbose_name='入賬',default=0,null=False)
     withdraw = models.IntegerField(verbose_name='提款',default=0,null=False)
+    processor = models.ForeignKey(User,models.CASCADE,related_name='處理者',default=1)
 
 
 
