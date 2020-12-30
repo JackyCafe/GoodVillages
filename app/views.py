@@ -10,7 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
-    PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm
+    PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm, AccountForm
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
     MyWorkTask, Account
 import random
@@ -330,7 +330,7 @@ def my_personal_tasks(request):
         task.is_award = True
         task.save()
         #新增至個人帳號
-        account = Account.objects.create(user = user,deposit=int(person_task['point']),transaction_date=datetime.now(),
+        account = Account.objects.create(user = user.userprofile,deposit=int(person_task['point']),transaction_date=datetime.now(),
                                          transaction_memo='工作任務')
         account.save()
 
@@ -504,7 +504,6 @@ def create_award_task(request):
     if request.method == 'POST':
         award_form = MyAwardTaskForm(request.POST)
         if award_form.is_valid():
-            log('here')
             cd = award_form.cleaned_data
             mytask = MyAwardTask.objects.create(**cd)
             mytask.user = UserProfile.objects.get(id=user_id)
@@ -651,3 +650,22 @@ def worktask_vaildation(request,task):
     worktasks.save()
     context = {'worktasks': worktasks}
     return render(request, 'account/accept_worktask.html', context)
+
+
+def manage_account_value(request):
+    accountForm: AccountForm
+    user_id = request.session.get('user')
+
+    if request.method =='POST':
+        accountForm = AccountForm(request.POST)
+        if accountForm.is_valid():
+            cd = accountForm.cleaned_data
+            account = Account.objects.create(**cd)
+            account.user = UserProfile.objects.get(id=user_id)
+            account.save()
+    else:
+        user = User.objects.get(id=user_id)
+        userprofile = user.userprofile
+        accountForm =  AccountForm(initial={'userprofile': userprofile})
+        context = {'accountForm':accountForm}
+    return render(request, 'account/manage_account_value.html',context)

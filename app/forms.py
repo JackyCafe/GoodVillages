@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.datastructures import MultiValueDict
 
-from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask
+from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account
 
 
 # Login
@@ -156,4 +156,16 @@ class WorkTaskForm(forms.ModelForm):
         fields = '__all__'
 
 
-# class AccountForm(forms.ModelForm):
+class AccountForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        initial = kwargs.get("initial",{})
+        user = initial.get('userprofile')
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['processor'].initial = user
+
+    class Meta:
+        model = Account
+        fields = '__all__'

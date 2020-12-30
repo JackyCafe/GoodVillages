@@ -26,13 +26,19 @@ class UserProfile(models.Model):
 
 #個人帳戶
 class Account(models.Model):
-    user = models.ForeignKey(User,models.CASCADE,related_name='住民名字')
+    Memo_CHOICE = (('Family', '家屬購買'),
+                        ('task', '任務所得'),
+                        ('other', '其他'),
+                        )
+    user = models.ForeignKey(UserProfile,models.CASCADE,related_name='account_user',verbose_name='住民名字')
     transaction_date  = models.DateField(default=timezone.now,verbose_name='交易日期')
-    transaction_memo = models.CharField(default=' ',max_length=40,verbose_name='交易內容')
+    transaction_memo = models.CharField(default=' ',max_length=40,verbose_name='交易內容',choices=Memo_CHOICE)
     deposit = models.IntegerField(verbose_name='入賬',default=0,null=False)
     withdraw = models.IntegerField(verbose_name='提款',default=0,null=False)
-    processor = models.ForeignKey(User,models.CASCADE,related_name='處理者',default=1)
+    processor = models.ForeignKey(UserProfile,models.CASCADE,related_name='account_processor',verbose_name='處理者',default=1)
 
+    def __str__(self):
+        return self.user
 
 
 # 任務

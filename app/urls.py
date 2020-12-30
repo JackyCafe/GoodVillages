@@ -56,4 +56,7 @@ urlpatterns = [
     path('worktask_start_count/<slug:task>',views.worktask_start_count,name='worktask_start_count'),
     path('worktask_end_count/<slug:task>',views.worktask_end_count,name='worktask_end_count'),
     path('worktask_vaildation/<slug:task>', views.worktask_vaildation, name='worktask_vaildation'),
+
+    #個人點數
+    path('manage_account_value/', views.manage_account_value, name='manage_account_value'),
 ]
