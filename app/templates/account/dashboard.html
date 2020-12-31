@@ -6,17 +6,20 @@
 {% block content %}
      {% if request.session.authority == 'resident' %}
 
-    <div class=".container-fluid" >
-<div class="row" >
-<div class="col-md-offset-4" >
-{#    <img src="{% static 'drawable/calendar.jpg' %}"style="width: 100%">#}
-    <div class="calendar"></div>
-</div>
+    <div class="container" >
 
+    <div class="row clearfix">
+        <div class="col-md-pu-6">
+	<a class="btn btn-info right mr-2" href="{% url 'app:calendar' %}?{{ next_month }} ">下個月 </a>
+    <a class="btn btn-info right mr-2" href="{% url 'app:calendar' %}?{{ prev_month }}">上個月 </a>
+            <a class="btn btn-info right mr-2" href="{% url 'app:event_new' %}"> 新事件 </a></div>
 
-
-</div>
+     <div class="row-cols-6" >
+            <div style="color: blueviolet;">{{ calendar|safe }}  </div>
     </div>
+    </div>
+    </div>
+
     {% endif %}
 
 {% endblock %}

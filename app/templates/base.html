@@ -15,19 +15,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
     <link href="{% static "css/base.css" %}" rel="stylesheet">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
-
-
-    <link  href="{% static "year-calendar/jquery1.bootstrap.year.calendar.css" %}" rel="stylesheet">
-    <script src="{% static 'year-calendar/jquery.bootstrap.year.calendar.js' %}"></script>
-
+    <link href="{% static "css/style.css" %}" rel="stylesheet">
 
 
 
@@ -49,7 +37,7 @@
        {% if request.session.authority == 'resident' %}
     <ul class="navbar-nav .nav-pills mr-auto">
       <li class="nav-item active"><h4>
-          <a class="nav-link" href="#">首頁 <span class="sr-only">(current)</span></a></h4>
+          <a class="nav-link" href="{% url 'app:dashboard' %}">首頁 <span class="sr-only">(current)</span></a></h4>
       </li>
       <li class="nav-item"><h4>
         <a class="nav-link" href="{% url 'app:my_personal_tasks' %}">每日任務</a></h4>

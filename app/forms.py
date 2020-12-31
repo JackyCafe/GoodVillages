@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import ModelForm, DateInput
 from django.utils.datastructures import MultiValueDict
 
-from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account
+from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account, Event
 
 
 # Login
@@ -169,3 +170,21 @@ class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = '__all__'
+
+
+#20201231 以下為行事曆
+class EventForm(ModelForm):
+  class Meta:
+    model = Event
+    # datetime-local is a HTML5 input type, format to make date time show on fields
+    widgets = {
+      'start_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+      'end_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+    }
+    exclude = ['user']
+
+  def __init__(self, *args, **kwargs):
+    super(EventForm, self).__init__(*args, **kwargs)
+    # input_formats to parse HTML5 datetime-local input to datetime field
+    self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
+    self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)

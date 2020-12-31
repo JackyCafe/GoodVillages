@@ -231,6 +231,29 @@ class MyWorkTask(models.Model):
     def vaildation(self):
         return reverse('app:worktask_vaildation',args=[self.slug])
 
+
+# 以下為行事曆
+# 2020/12/31
+
+class Event(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200, unique=True,verbose_name='主題')
+    description = models.TextField(verbose_name='描述')
+    start_time = models.DateTimeField(verbose_name='開始時間')
+    end_time = models.DateTimeField(verbose_name='結束時間')
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('app:event-detail', args=(self.id,))
+
+    @property
+    def get_html_url(self):
+        url = reverse('app:event-detail', args=(self.id,))
+        return f'<a href="{url}"> {self.title} </a>'
+
 # 行事曆
 # class Calendar(models.Model):
 #     owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='owner', verbose_name='擁有者')
