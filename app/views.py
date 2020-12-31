@@ -755,4 +755,4 @@ def event_details(request, event_id):
         'event': event,
         # 'eventmember': eventmember
     }
-    return render(request, 'event-details.html', context)
+    return render(request, 'account/event-details.html', context)
