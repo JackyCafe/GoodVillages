@@ -28,8 +28,8 @@ class Calendar(HTMLCalendar):
         return f'<tr> {week} </tr>'
 
 
+    #產生行事曆Html
 
-#todo filter the user
     def formatmonth(self,user_id ,withyear=True):
 
         events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month,user = user_id)

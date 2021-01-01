@@ -4,9 +4,9 @@
     <div class="container">
     目前已有任務：
      <div class="row">
-        <a href="{% url 'app:depoly_award_task' %}" class="mbutton btn">所有任務</a>
-        <a href="{% url 'app:create_award_task' %}" class="mbutton btn">發布任務</a>
-         <a href="{% url 'app:my_award_task' request.user.id %}" class="mbutton btn">我的任務</a>
+        <a href="{% url 'app:depoly_award_task' %}" class="btn btn-info left mr-2">所有任務</a>
+        <a href="{% url 'app:create_award_task' %}" class="btn btn-info left mr-2">發布任務</a>
+         <a href="{% url 'app:my_award_task' request.user.id %}" class="btn btn-info left mr-2">我的任務</a>
      </div>
             <div class="row" style="background: #f6f6f6;height: 3em;" 　>執行中任務</div>
          <div class="card-columns">

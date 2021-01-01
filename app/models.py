@@ -26,13 +26,14 @@ class UserProfile(models.Model):
 
 #個人帳戶
 class Account(models.Model):
-    Memo_CHOICE = (('Family', '家屬購買'),
+    Memo_CHOICE = (('家屬購買', '家屬購買'),
                         ('task', '任務所得'),
                         ('other', '其他'),
                         )
     user = models.ForeignKey(UserProfile,models.CASCADE,related_name='account_user',verbose_name='住民名字')
     transaction_date  = models.DateField(default=timezone.now,verbose_name='交易日期')
     transaction_memo = models.CharField(default=' ',max_length=40,verbose_name='交易內容',choices=Memo_CHOICE)
+    slug =  RandomCharField(length=32, unique=True, unique_for_date='transaction_date')
     deposit = models.IntegerField(verbose_name='入賬',default=0,null=False)
     withdraw = models.IntegerField(verbose_name='提款',default=0,null=False)
     processor = models.ForeignKey(UserProfile,models.CASCADE,related_name='account_processor',verbose_name='處理者',default=1)
@@ -40,6 +41,8 @@ class Account(models.Model):
     def __str__(self):
         return self.user
 
+    def get_account_url(self):
+        return reverse('app:account_list',args=(self.id,self.slug))
 
 # 任務
 class Task(models.Model):
@@ -254,22 +257,22 @@ class Event(models.Model):
         url = reverse('app:event-detail', args=(self.id,))
         return f'<a href="{url}"> {self.title} </a>'
 
+
 # 行事曆
-# class Calendar(models.Model):
-#     owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='owner', verbose_name='擁有者')
-#     title = models.CharField(max_length=64, verbose_name='標題')
-#     content = RichTextField(verbose_name='說明')
-#     photo = models.ImageField(upload_to='calendars/%Y/%m/%d/', null=True, blank=True, verbose_name='照片')
-#     slug = RandomCharField(length=8, unique=True, unique_for_date='publish')
-#     publish = models.DateField(auto_now=True, verbose_name='發布日期')
-#     sponsor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='sponsor', verbose_name='發起者')
-#     participate = models.ManyToManyField(UserProfile, verbose_name='參與者')
-#
-#
-#     class Meta:
-#         ordering = ['-publish']
-#
-#     def __str__(self):
-#         return f'{self.title}'
+class Calendar(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='calendar_owner',verbose_name='發起人')
+    title = models.CharField(max_length=64, verbose_name='標題')
+    content = RichTextField(verbose_name='說明')
+    photo = models.ImageField(upload_to='calendars/%Y/%m/%d/', null=True, blank=True, verbose_name='照片')
+    slug = RandomCharField(length=8, unique=True, unique_for_date='publish')
+    start_time = models.DateTimeField(verbose_name='開始時間',auto_created=False,null=True)
+    end_time = models.DateTimeField(verbose_name='結束時間',auto_created=False,null=True)
+    publish = models.DateField(auto_now=True, verbose_name='發布日期')
+
+    class Meta:
+        ordering = ['-publish']
+
+    def __str__(self):
+        return f'{self.title}'
 
 

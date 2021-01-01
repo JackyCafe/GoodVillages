@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm, DateInput
 from django.utils.datastructures import MultiValueDict
 
-from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account, Event
+from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account, Event, \
+    Calendar
 
 
 # Login
@@ -170,6 +171,7 @@ class AccountForm(forms.ModelForm):
     class Meta:
         model = Account
         fields = '__all__'
+        exclude = ['withdraw']
 
 
 #20201231 以下為行事曆
@@ -188,3 +190,20 @@ class EventForm(ModelForm):
     # input_formats to parse HTML5 datetime-local input to datetime field
     self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
     self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
+
+
+#2021/01/01
+class CalendarForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get("initial", {})
+        user = initial.get('userprofile')
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Calendar
+        # datetime-local is a HTML5 input type, format to make date time show on fields
+        widgets = {
+            'start_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'end_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+        }
+        exclude = ['user']

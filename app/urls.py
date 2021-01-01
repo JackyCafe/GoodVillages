@@ -59,10 +59,15 @@ urlpatterns = [
 
     #個人點數
     path('manage_account_value/', views.manage_account_value, name='manage_account_value'),
-    #以下為行事曆
+    path('account_list/<int:id>/<slug:account_slug>',views.account_list,name='account_list'),
+    #個人行事曆
     path('', views.CalendarView.as_view(), name='calendar'),
     path('event/<int:event_id>/details/', views.event_details, name='event-detail'),
     path('event/new/', views.create_event, name='event_new'),
     path('event/edit/<int:pk>/', views.EventEdit.as_view(), name='event_edit'),
+
+    #園區行事曆
+    path('manage_calendar/',views.manage_calendar,name='manage_calendar')
+
 
 ]

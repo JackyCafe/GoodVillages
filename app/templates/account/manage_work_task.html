@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}工作任務{% endblock %}
 {% block content %}
-    {% if request.session.authority == 'admin' %}
-    <a href="{% url 'app:create_work_task' %}" class="mbutton btn">發布任務</a>
-    {% endif %}
+    <a href="{% url 'app:create_work_task' %}" class="btn btn-info left mr-2">發布任務</a>
+
     {% for task in tasks %}
         <div class="card">
         <div class="card-header ">

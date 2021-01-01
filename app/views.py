@@ -653,6 +653,14 @@ def worktask_vaildation(request,task):
     return render(request, 'account/accept_worktask.html', context)
 
 
+def account_list(request,id,account_slug):
+    accounts = get_object_or_404(Account,id=id,slug=account_slug)
+    context = {'accounts':accounts}
+    return render(request,'account/account_value_list.html',context)
+
+
+
+
 def manage_account_value(request):
     accountForm: AccountForm
     user_id = request.session.get('user')
@@ -662,14 +670,15 @@ def manage_account_value(request):
         if accountForm.is_valid():
             cd = accountForm.cleaned_data
             account = Account.objects.create(**cd)
-            account.user = UserProfile.objects.get(id=user_id)
+            account.processor = UserProfile.objects.get(id=user_id)
             account.save()
+            return redirect(account.get_account_url(),id=account.id,slug=account.slug)
     else:
         user = User.objects.get(id=user_id)
         userprofile = user.userprofile
         accountForm =  AccountForm(initial={'userprofile': userprofile})
         context = {'accountForm':accountForm}
-    return render(request, 'account/manage_account_value.html',context)
+    return render(request, 'account/create_account_value.html',context)
 
 #2020/12/31 以下為行事曆
 def get_date(req_day):
@@ -741,3 +750,12 @@ def event_details(request, event_id):
         # 'eventmember': eventmember
     }
     return render(request, 'account/event-details.html', context)
+
+
+def manage_calendar(request):
+
+
+
+    return None
+
+
