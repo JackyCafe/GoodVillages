@@ -56,4 +56,18 @@ urlpatterns = [
     path('worktask_start_count/<slug:task>',views.worktask_start_count,name='worktask_start_count'),
     path('worktask_end_count/<slug:task>',views.worktask_end_count,name='worktask_end_count'),
     path('worktask_vaildation/<slug:task>', views.worktask_vaildation, name='worktask_vaildation'),
+
+    #個人點數
+    path('manage_account_value/', views.manage_account_value, name='manage_account_value'),
+    path('account_list/<int:id>/<slug:account_slug>',views.account_list,name='account_list'),
+    #個人行事曆
+    path('', views.CalendarView.as_view(), name='calendar'),
+    path('event/<int:event_id>/details/', views.event_details, name='event-detail'),
+    path('event/new/', views.create_event, name='event_new'),
+    path('event/edit/<int:pk>/', views.EventEdit.as_view(), name='event_edit'),
+
+    #園區行事曆
+    path('create_calendar/',views.create_calendar,name='create_calendar')
+
+
 ]

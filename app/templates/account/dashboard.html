@@ -5,17 +5,32 @@
 {% endblock %}
 {% block content %}
      {% if request.session.authority == 'resident' %}
+     <div class="container">
+        <div class="row">
+            <div class="col col-md-6" >
+                <a class="btn btn-info left ml-0" href="{% url 'app:calendar' %}?{{ next_month }} ">下個月 </a>
+                <a class="btn btn-info left ml-0" href="{% url 'app:calendar' %}?{{ prev_month }}">上個月 </a>
+                <a class="btn btn-info left m1-0" href="{% url 'app:event_new' %}"> 新事件 </a>
+                 <div style="color: blueviolet;">{{ html_cal|safe }}  </div>
 
-    <div class=".container-fluid" >
-<div class="row" >
-<div class="col-md-offset-4" >
-    <img src="{% static 'drawable/calendar.jpg' %}"style="width: 100%">
-</div>
+            </div>
+            <div class="col col-md-6" >
+                <div class="event">
+                <ul class="list-group">
+                    {% for calendar in calendars %}
+                        <li class="list-group-item"> {{ calendar.title }}</li>
+                        {% endfor %}
+                </ul>
+            </div>
+            </div>
+
+        </div>
+
+     </div>
 
 
 
-</div>
-    </div>
+
     {% endif %}
 
 {% endblock %}

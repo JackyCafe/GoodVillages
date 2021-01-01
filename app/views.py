@@ -1,21 +1,29 @@
 from datetime import datetime,date, timedelta
-from functools import wraps
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.utils.safestring import mark_safe
+from django.views import generic
+
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
-    PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm
+    PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm, AccountForm, EventForm, \
+    CalendarForm
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
-    MyWorkTask, Account
+    MyWorkTask, Account, Event,Calendars
 import random
 import logging
+import calendar
 
+
+# from .utils import Calendar
+from app.utils import Calendar
 
 logger = logging.getLogger(__name__)
 log = logger.info
@@ -35,39 +43,32 @@ def dashboard(request):
     authority = request.user.userprofile.authority
     request.session['authority'] = authority
     request.session['user'] = request.user.id
-    user = request.user.id
+    user_id = request.user.id
 
-    personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
-
+    calendars = Calendars.objects.all()
+    log(calendars)
     # 今天沒有每日任務
     # 今天 如果沒有 每日任務，由系統產生一個
     #
-    if personal_tasks.count() == 0:
-        tasks = Task.objects.filter(is_vaild=True).all()
-        logger.info(tasks.count())
-        count = tasks.count()
-        ids = []
-        i = 0
-        #  隨機挑選不重複的每日任務
-        # while i < 3:
-        #     id = random.randint(1, count - 1)
-        #     if id not in ids:
-        #         ids.append(id)
-        #         task = Task.objects.get(id=id)
-        #         personal_task = PersonalTask()
-        #         personal_task.user = request.user.userprofile
-        #         personal_task.task = task
-        #         personal_task.point = task.point
-        #         personal_task.save()
-        #         i = i + 1
-        # personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
+
+
+    d = get_date(request.GET.get('month', None))
+    cal = Calendar(d.year, d.month)
+    html_cal = cal.formatmonth(user_id=user_id,withyear=True)
+    context = {
+    'section': 'dashboard',
+     'authority': authority,
+     'calendars': calendars,
+     'html_cal': html_cal,
+     'prev_month':  prev_month(d),
+     'next_month':next_month(d)
+     }
+
+
 
     return render(request,
                   'account/dashboard.html',
-                  {'section': 'dashboard',
-                   'authority': authority,
-                   'personal_tasks': personal_tasks
-                   }
+                   context
 
                   )
 
@@ -310,7 +311,7 @@ def my_personal_tasks(request):
                 personal_task.point = task.point
                 personal_task.save()
                 i = i + 1
-        personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
+        personal_tasks = PersonalTask.objects.filter(user=user.userprofile).filter(assign_date=datetime.today().date())
 
     finish_date = []
     points = 0
@@ -330,7 +331,7 @@ def my_personal_tasks(request):
         task.is_award = True
         task.save()
         #新增至個人帳號
-        account = Account.objects.create(user = user,deposit=int(person_task['point']),transaction_date=datetime.now(),
+        account = Account.objects.create(user = user.userprofile,deposit=int(person_task['point']),transaction_date=datetime.now(),
                                          transaction_memo='工作任務')
         account.save()
 
@@ -504,7 +505,6 @@ def create_award_task(request):
     if request.method == 'POST':
         award_form = MyAwardTaskForm(request.POST)
         if award_form.is_valid():
-            log('here')
             cd = award_form.cleaned_data
             mytask = MyAwardTask.objects.create(**cd)
             mytask.user = UserProfile.objects.get(id=user_id)
@@ -613,7 +613,6 @@ def accept_work_task(request,task_id,task):
     worktasks,created = MyWorkTask.objects.get_or_create(user_id=user_id,task_id=task_id
                                                          ,isfinish =False
                                                          )
-    log(created)
     if created :
        worktasks.date =date
        worktasks.save()
@@ -651,3 +650,122 @@ def worktask_vaildation(request,task):
     worktasks.save()
     context = {'worktasks': worktasks}
     return render(request, 'account/accept_worktask.html', context)
+
+
+def account_list(request,id,account_slug):
+    accounts = get_object_or_404(Account,id=id,slug=account_slug)
+    context = {'accounts':accounts}
+    return render(request,'account/account_value_list.html',context)
+
+
+
+
+def manage_account_value(request):
+    accountForm: AccountForm
+    user_id = request.session.get('user')
+
+    if request.method =='POST':
+        accountForm = AccountForm(request.POST)
+        if accountForm.is_valid():
+            cd = accountForm.cleaned_data
+            account = Account.objects.create(**cd)
+            account.processor = UserProfile.objects.get(id=user_id)
+            account.save()
+            return redirect(account.get_account_url(),id=account.id,slug=account.slug)
+    else:
+        user = User.objects.get(id=user_id)
+        userprofile = user.userprofile
+        accountForm =  AccountForm(initial={'userprofile': userprofile})
+        context = {'accountForm':accountForm}
+    return render(request, 'account/create_account_value.html',context)
+
+#2020/12/31 以下為行事曆
+def get_date(req_day):
+    if req_day:
+        year, month = (int(x) for x in req_day.split('-'))
+        return date(year, month, day=1)
+    return datetime.today()
+
+def prev_month(d):
+    first = d.replace(day=1)
+    prev_month = first - timedelta(days=1)
+    month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
+    return month
+
+def next_month(d):
+    days_in_month = calendar.monthrange(d.year, d.month)[1]
+    last = d.replace(day=days_in_month)
+    next_month = last + timedelta(days=1)
+    month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
+    return month
+
+#CalendarView
+
+class CalendarView(LoginRequiredMixin, generic.ListView):
+    login_url = 'signup'
+    model = Event
+    template_name = 'calendar.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        d = get_date(self.request.GET.get('month', None))
+        cal = Calendar(d.year, d.month)
+        html_cal = cal.formatmonth(withyear=True)
+        context['calendar'] = mark_safe(html_cal)
+        context['prev_month'] = prev_month(d)
+        context['next_month'] = next_month(d)
+        return context
+
+@login_required(login_url='signup')
+def create_event(request):
+    form = EventForm(request.POST or None)
+    if request.POST and form.is_valid():
+        title = form.cleaned_data['title']
+        description = form.cleaned_data['description']
+        start_time = form.cleaned_data['start_time']
+        end_time = form.cleaned_data['end_time']
+        Event.objects.get_or_create(
+            user=request.user,
+            title=title,
+            description=description,
+            start_time=start_time,
+            end_time=end_time
+        )
+        return HttpResponseRedirect(reverse('app:calendar'))
+    return render(request, 'event.html', {'form': form})
+
+
+class EventEdit(generic.UpdateView):
+    model = Event
+    fields = ['title', 'description', 'start_time', 'end_time']
+    template_name = 'event.html'
+
+@login_required(login_url='signup')
+def event_details(request, event_id):
+    event = Event.objects.get(id=event_id)
+    # eventmember = EventMember.objects.filter(event=event)
+    context = {
+        'event': event,
+        # 'eventmember': eventmember
+    }
+    return render(request, 'account/event-details.html', context)
+
+
+def create_calendar(request):
+    calendar_form : CalendarForm()
+    user_id = request.session.get('user')
+    user = User.objects.get(id = user_id)
+
+    if request.method=='POST':
+        calendar_form = CalendarForm(request.POST)
+        if calendar_form.is_valid():
+           cd = calendar_form.cleaned_data
+           calendar = Calendars.objects.create(user=user,**cd)
+           calendar.save()
+           return redirect(reverse('app:dashboard'))
+    else:
+        calendar_form = CalendarForm()
+        context = {'calendar_form':calendar_form}
+        return render(request, 'account/create_calendar.html', context)
+
+

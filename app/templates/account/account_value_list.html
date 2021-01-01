@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="card">
+              <div class="card-header">{{ accounts.user.user.userprofile }} </div>
+              <div class="card-body">
+                  <ul class="list-group">
+
+                  <li class="list-group-item"> 來源:
+                      {{ accounts.transaction_memo }}
+                  </li>
+                      <li class="list-group-item"> 入賬:{{ accounts.deposit }} </li>
+                      <li class="list-group-item"> 日期:{{ accounts.transaction_date }}</li>
+                 </ul>
+              </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
