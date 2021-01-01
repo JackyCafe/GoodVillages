@@ -67,7 +67,7 @@ urlpatterns = [
     path('event/edit/<int:pk>/', views.EventEdit.as_view(), name='event_edit'),
 
     #園區行事曆
-    path('manage_calendar/',views.manage_calendar,name='manage_calendar')
+    path('create_calendar/',views.create_calendar,name='create_calendar')
 
 
 ]

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+    園區行事曆
+{% endblock %}
+{% block content %}
+    <form method="post" >
+        {{ calendar_form.as_p }}
+        {{ calendar_form.media }}
+        {% csrf_token %}
+        <input type="submit" value="登入">
+
+    </form>
+{% endblock %}

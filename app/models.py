@@ -259,14 +259,14 @@ class Event(models.Model):
 
 
 # 行事曆
-class Calendar(models.Model):
+class Calendars(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='calendar_owner',verbose_name='發起人')
     title = models.CharField(max_length=64, verbose_name='標題')
     content = RichTextField(verbose_name='說明')
     photo = models.ImageField(upload_to='calendars/%Y/%m/%d/', null=True, blank=True, verbose_name='照片')
     slug = RandomCharField(length=8, unique=True, unique_for_date='publish')
-    start_time = models.DateTimeField(verbose_name='開始時間',auto_created=False,null=True)
-    end_time = models.DateTimeField(verbose_name='結束時間',auto_created=False,null=True)
+    start_time = models.DateTimeField(verbose_name='開始時間')
+    end_time = models.DateTimeField(verbose_name='結束時間')
     publish = models.DateField(auto_now=True, verbose_name='發布日期')
 
     class Meta:

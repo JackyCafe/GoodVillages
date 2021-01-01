@@ -11,10 +11,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views import generic
+
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
-    PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm, AccountForm, EventForm
+    PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm, AccountForm, EventForm, \
+    CalendarForm
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
-    MyWorkTask, Account, Event
+    MyWorkTask, Account, Event,Calendars
 import random
 import logging
 import calendar
@@ -43,14 +45,12 @@ def dashboard(request):
     request.session['user'] = request.user.id
     user_id = request.user.id
 
-    personal_tasks = PersonalTask.objects.filter(user=user_id).filter(assign_date=datetime.today().date())
-
+    calendars = Calendars.objects.all()
+    log(calendars)
     # 今天沒有每日任務
     # 今天 如果沒有 每日任務，由系統產生一個
     #
-    if personal_tasks.count() == 0:
-        tasks = Task.objects.filter(is_vaild=True).all()
-        logger.info(tasks.count())
+
 
     d = get_date(request.GET.get('month', None))
     cal = Calendar(d.year, d.month)
@@ -58,8 +58,8 @@ def dashboard(request):
     context = {
     'section': 'dashboard',
      'authority': authority,
-     'personal_tasks': personal_tasks,
-     'calendar': html_cal,
+     'calendars': calendars,
+     'html_cal': html_cal,
      'prev_month':  prev_month(d),
      'next_month':next_month(d)
      }
@@ -613,7 +613,6 @@ def accept_work_task(request,task_id,task):
     worktasks,created = MyWorkTask.objects.get_or_create(user_id=user_id,task_id=task_id
                                                          ,isfinish =False
                                                          )
-    log(created)
     if created :
        worktasks.date =date
        worktasks.save()
@@ -752,10 +751,21 @@ def event_details(request, event_id):
     return render(request, 'account/event-details.html', context)
 
 
-def manage_calendar(request):
+def create_calendar(request):
+    calendar_form : CalendarForm()
+    user_id = request.session.get('user')
+    user = User.objects.get(id = user_id)
 
-
-
-    return None
+    if request.method=='POST':
+        calendar_form = CalendarForm(request.POST)
+        if calendar_form.is_valid():
+           cd = calendar_form.cleaned_data
+           calendar = Calendars.objects.create(user=user,**cd)
+           calendar.save()
+           return redirect(reverse('app:dashboard'))
+    else:
+        calendar_form = CalendarForm()
+        context = {'calendar_form':calendar_form}
+        return render(request, 'account/create_calendar.html', context)
 
 

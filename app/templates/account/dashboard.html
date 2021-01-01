@@ -5,20 +5,31 @@
 {% endblock %}
 {% block content %}
      {% if request.session.authority == 'resident' %}
+     <div class="container">
+        <div class="row">
+            <div class="col col-md-6" >
+                <a class="btn btn-info left ml-0" href="{% url 'app:calendar' %}?{{ next_month }} ">下個月 </a>
+                <a class="btn btn-info left ml-0" href="{% url 'app:calendar' %}?{{ prev_month }}">上個月 </a>
+                <a class="btn btn-info left m1-0" href="{% url 'app:event_new' %}"> 新事件 </a>
+                 <div style="color: blueviolet;">{{ html_cal|safe }}  </div>
 
-    <div class="container" >
+            </div>
+            <div class="col col-md-6" >
+                <div class="event">
+                <ul class="list-group">
+                    {% for calendar in calendars %}
+                        <li class="list-group-item"> {{ calendar.title }}</li>
+                        {% endfor %}
+                </ul>
+            </div>
+            </div>
 
-    <div class="row clearfix">
-        <div class="col-md-pu-6">
-	<a class="btn btn-info right mr-2" href="{% url 'app:calendar' %}?{{ next_month }} ">下個月 </a>
-    <a class="btn btn-info right mr-2" href="{% url 'app:calendar' %}?{{ prev_month }}">上個月 </a>
-            <a class="btn btn-info right mr-2" href="{% url 'app:event_new' %}"> 新事件 </a></div>
+        </div>
 
-     <div class="row-cols-6" >
-            <div style="color: blueviolet;">{{ calendar|safe }}  </div>
-    </div>
-    </div>
-    </div>
+     </div>
+
+
+
 
     {% endif %}
 
