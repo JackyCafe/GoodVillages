@@ -29,9 +29,10 @@ class Calendar(HTMLCalendar):
 
 
 
+#todo filter the user
+    def formatmonth(self,user_id ,withyear=True):
 
-    def formatmonth(self, withyear=True):
-        events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month)
+        events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month,user = user_id)
 
         cal = f'<table border="1" cellpadding="0" cellspacing="0" class="calendar">\n'
         cal += f'{self.formatmonthname(self.year, self.month, withyear=withyear)}\n'

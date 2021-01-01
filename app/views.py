@@ -41,9 +41,9 @@ def dashboard(request):
     authority = request.user.userprofile.authority
     request.session['authority'] = authority
     request.session['user'] = request.user.id
-    user = request.user.id
+    user_id = request.user.id
 
-    personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
+    personal_tasks = PersonalTask.objects.filter(user=user_id).filter(assign_date=datetime.today().date())
 
     # 今天沒有每日任務
     # 今天 如果沒有 每日任務，由系統產生一個
@@ -51,25 +51,10 @@ def dashboard(request):
     if personal_tasks.count() == 0:
         tasks = Task.objects.filter(is_vaild=True).all()
         logger.info(tasks.count())
-        count = tasks.count()
-        ids = []
-        i = 0
-        #  隨機挑選不重複的每日任務
-        # while i < 3:
-        #     id = random.randint(1, count - 1)
-        #     if id not in ids:
-        #         ids.append(id)
-        #         task = Task.objects.get(id=id)
-        #         personal_task = PersonalTask()
-        #         personal_task.user = request.user.userprofile
-        #         personal_task.task = task
-        #         personal_task.point = task.point
-        #         personal_task.save()
-        #         i = i + 1
-        # personal_tasks = PersonalTask.objects.filter(user=user).filter(assign_date=datetime.today().date())
+
     d = get_date(request.GET.get('month', None))
     cal = Calendar(d.year, d.month)
-    html_cal = cal.formatmonth(withyear=True)
+    html_cal = cal.formatmonth(user_id=user_id,withyear=True)
     context = {
     'section': 'dashboard',
      'authority': authority,
