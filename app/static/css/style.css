@@ -1,8 +1,7 @@
 .calendar {
-    width: 70%;
+    width: 98%;
     margin: auto;
     font-size: 13px;
-    /*display: flex;*/
     top:0px;
     float: left;
   }
@@ -12,16 +11,11 @@
     font-size: 13px;
     /*display: flex;*/
     float: right;
-    position: relative;
-    width:98% ;
+    position: absolute;
+    width:100% ;
 
   }
-@media(max-width: 768px){
-    .event{
-        height: auto;//高度自動
-        padding-top: 20px;//內距上方預留20px
-    }
-}
+
 
   .calendar tr, .calendar td {
     border: 1px solid black;
