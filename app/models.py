@@ -207,6 +207,8 @@ class WorkTask(models.Model):
     slug = RandomCharField(length=32, unique=True, unique_for_date='publish')
     publish = models.DateField(default=timezone.now, verbose_name='任務發布時間')
     point = models.IntegerField(default=0,verbose_name='獲得點數')
+    photo = models.ImageField(upload_to='Award/%Y/%m/%d/', null=True, blank=True, verbose_name='懸賞任務')
+
 
     def getUrl(self):
         return reverse('app:accept_work_task', args=[self.id, self.slug])
@@ -227,6 +229,7 @@ class MyWorkTask(models.Model):
 
     def __str__(self):
         return  self.task.task_name
+
 
     def startCount(self):
         return reverse('app:worktask_start_count',args=[self.slug])

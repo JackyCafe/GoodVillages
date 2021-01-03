@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views import generic
@@ -46,7 +46,6 @@ def dashboard(request):
     user_id = request.user.id
 
     calendars = Calendars.objects.all()
-    log(calendars)
     # 今天沒有每日任務
     # 今天 如果沒有 每日任務，由系統產生一個
     #
@@ -505,7 +504,6 @@ def create_award_task(request,):
     award_form: MyAwardTaskForm()
     if request.method == 'POST':
         award_form = MyAwardTaskForm(request.POST,request.FILES)
-        print(request.FILES)
         if award_form.is_valid():
             cd = award_form.cleaned_data
             mytask = MyAwardTask.objects.create(**cd)
@@ -585,9 +583,18 @@ def my_award_task(request,user_id):
 
 
 def manage_work_task(request):
-    tasks = WorkTask.objects.all()
-    context = {'tasks': tasks}
-    return render(request, 'account/manage_work_task.html', context)
+    user_id = request.session.get('user')
+    user = UserProfile.objects.get(id = user_id)
+    log('ggyy')
+    try:
+        tasks = get_list_or_404(MyWorkTask,user=user_id,isfinish=False)
+        context = {'tasks':tasks}
+        log('here')
+        return render(request, 'account/nonfinish_work_task.html', context)
+    except:
+        tasks = WorkTask.objects.all()
+        context = {'tasks': tasks}
+        return render(request, 'account/manage_work_task.html', context)
 
 
 
@@ -595,9 +602,12 @@ def create_work_task(request):
     user_id = request.session.get('user')
     work_form : WorkTaskForm()
     if request.method == 'POST':
-        work_form = WorkTaskForm(request.POST)
-        work_form.save()
-        return redirect(reverse('app:manage_work_task'))
+        work_form = WorkTaskForm(request.POST,request.FILES)
+        if work_form.is_valid():
+            cd = work_form.cleaned_data
+            work_task = WorkTask.objects.create(**cd)
+            work_task.save()
+            return redirect(reverse('app:manage_work_task'))
     else:
         user = User.objects.get(id=user_id)
         userprofile = user.userprofile
@@ -636,8 +646,6 @@ def worktask_end_count(request,task):
     worktasks.end_time = datetime.now()
     worktasks.isfinish =True
     worktasks.save()
-    log(worktasks.end_time)
-    log(worktasks.start_time)
     diff_time = (worktasks.end_time-worktasks.start_time)
     hours,remainer = divmod(diff_time.total_seconds(),3600)
     minutes,seconds = divmod(remainer,60)

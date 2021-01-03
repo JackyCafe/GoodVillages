@@ -9,20 +9,20 @@
     {% for task in tasks %}
         <div class="card">
         <div class="card-header ">
-            <a href="{{ task.getUrl }} ">
-            {{ task.user }} 有一個 {{ task.task_name }}任務
+            <a href="{{ task.task.getUrl }} ">
+            {{ task.user }} 有一個 {{ task.task_name }}未結案任務
             </a>
         </div>
-         {%if task.photo  %}
-                <img  src="{{ task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 70%;height: 70%" >
+         {%if task.task.photo  %}
+                <img  src="{{ task.task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 70%;height: 70%" >
             {% endif %}
             <div class="card-body">
-            <div class="card-text"> {{ task.task_content|safe }}
-             發布日期：{{ task.publish }}</div>
+            <div class="card-text"> {{ task.task.task_content|safe }}
+             發布日期：{{ task.task.publish }}</div>
                 </div>
-        {% if task.accept_man %}
+        {% if task.user %}
         <h7 class="card-footer">
-            接受任務:{{ task.accept_man.userprofile }}
+            接受任務:{{ task.user }}
         </h7>
         </div>
         {% endif %}

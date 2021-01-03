@@ -4,9 +4,12 @@
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-             <div class="card-group">
+             <div class="card-columns">
             <div class="card">
                 <div class="card-header">{{ worktasks.task }}  by {{ worktasks.user }}</div>
+             {% if worktasks.task.photo %}
+                <img  src="{{ worktasks.task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 70%;height: 70%;" >
+            {% endif %}
                 <div class="card-body">{{ worktasks.task.task_content|safe }}
                     <p> {% if worktasks.start_time %}工作開始{{ worktasks.start_time }} {% endif %}</p>
                     <p>{% if worktasks.end_time %} 工作結束{{worktasks.end_time}}
