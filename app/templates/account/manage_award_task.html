@@ -23,7 +23,11 @@
             {% endif %}
             </a>
         </div>
+            {% if task.photo %}
+                <img  src="{{ task.photo.url }}" class="card-img-top" style="width: 70%;height: 70%" >
+            {% endif %}
             <div class="card-body">
+
             <div class="card-text"> {{ task.task_content|safe }}
              發布日期：{{ task.publish }}
             <p>
@@ -60,6 +64,9 @@
             {% endif %}
             </a>
         </div>
+          {% if task.photo %}
+                <img  src="{{ task.photo.url }}" class="card-img-top" style="width: 70%;height: 70%" >
+            {% endif %}
             <div class="card-body">
             <div class="card-text"> {{ task.task_content|safe }}
              發布日期：{{ task.publish }}
@@ -96,8 +103,12 @@
             {% endif %}
             </a>
         </div>
+            {% if task.photo %}
+                <img  src="{{ task.photo.url }}" class="card-img-top" style="width: 70%;height: 70%" >
+            {% endif %}
             <div class="card-body">
             <div class="card-text"> {{ task.task_content|safe }}
+
              發布日期：{{ task.publish }}
             <p>
              {% if task.approve_man %}

@@ -12,7 +12,7 @@
         </div>
 
         <div class="row">我發布的任務</div>
-        <div class="card-group">
+        <div class="card-columns">
         {% for task in my_depoly_tasks %}
 
         <div class="card">
@@ -20,10 +20,14 @@
             {{ task.user }} 有一個 {{ task.task_name }}任務
 
         </div>
+             {% if task.photo %}
+                <img  src="{{ task.photo.url }}" class="card-img-top" style="width: 70%;height: 70%;" >
+            {% endif %}
             <div class="card-body">
-            <div class="card-text list-group">
-               <li class="list-group-item"> {{ task.task_content|safe }}</li>
-                <li class="list-group-item"> 發布日期　{{ task.publish }} </li>
+
+            <div class="card-text">
+                {{ task.task_content|safe }}
+                 發布日期　{{ task.publish }}
             </div>
                 </div>
         <div class="card-footer">接受任務者:{{ task.accept_man.userprofile }} </div>
@@ -32,7 +36,7 @@
         </div>
 
         <div class="row">我接受的任務</div>
-        <div class="card-group">
+        <div class="card-columns">
         {% for task in my_accept_tasks %}
 
         <div class="card">
@@ -40,6 +44,9 @@
             {{ task.user }} 有一個 {{ task.task_name }}任務
 
         </div>
+             {% if task.photo %}
+                <img  src="{{ task.photo.url }}" class="card-img-top" style="width: 70%;height: 70%" >
+            {% endif %}
             <div class="card-body">
             <div class="card-text list-group">
                <li class="list-group-item"> {{ task.task_content|safe }}</li>

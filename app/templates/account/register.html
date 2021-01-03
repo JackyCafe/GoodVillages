@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}create account{% endblock %}
 {% block content %}
- <form method="post">
+ <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
 
  {{ user_form.as_p }}

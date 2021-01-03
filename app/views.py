@@ -107,7 +107,7 @@ def register(request):
 
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
-        profile_form = ProfileEditForm(request.POST)
+        profile_form = ProfileEditForm(request.POST,request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
 
             new_user = user_form.save()  # 產生user instance
@@ -499,11 +499,13 @@ def manage_award_task(request):
 
 # 　20201208 由住民發布懸賞任務
 # 　只有approve_man　欄位不是空白的情境下才允許陳列在工作列表中
-def create_award_task(request):
+#   todo 加user
+def create_award_task(request,):
     user_id = request.session.get('user')
     award_form: MyAwardTaskForm()
     if request.method == 'POST':
-        award_form = MyAwardTaskForm(request.POST)
+        award_form = MyAwardTaskForm(request.POST,request.FILES)
+        print(request.FILES)
         if award_form.is_valid():
             cd = award_form.cleaned_data
             mytask = MyAwardTask.objects.create(**cd)

@@ -192,6 +192,9 @@ class MyAwardTask(models.Model):
     approve_time = models.DateField(auto_now_add=False,verbose_name='任務核可時間',null=True)
     accept_man = models.ForeignKey(User,models.CASCADE,related_name='accept_man',verbose_name='任務接受人',null = True)
     accept_time = models.DateField(auto_now_add=False,verbose_name='任務接受時間',null=True)
+    photo = models.ImageField(upload_to='Award/%Y/%m/%d/', null=True, blank=True, verbose_name='懸賞任務')
+
+
 
     def __str__(self):
         return self.task_name

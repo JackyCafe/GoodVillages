@@ -139,7 +139,7 @@ class MyAwardTaskForm(forms.ModelForm):
 
     class Meta:
         model = MyAwardTask
-        fields = ('user','task_name','task_content','publish','point')
+        fields = ('user','task_name','task_content','publish','photo','point')
 
 
 #定義工作任務
