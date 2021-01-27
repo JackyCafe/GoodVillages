@@ -4,7 +4,7 @@ from django.forms import ModelForm, DateInput
 from django.utils.datastructures import MultiValueDict
 
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account, Event, \
-    Calendars
+    Calendars, MyWorkTask
 
 
 # Login
@@ -156,6 +156,23 @@ class WorkTaskForm(forms.ModelForm):
     class Meta:
         model = WorkTask
         fields = '__all__'
+
+
+#我的工作任務
+class MyWorkTaskForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        initial = kwargs.get("initial", {})
+        user = initial.get('userprofile')
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['user'].initial = user
+
+    class Meta:
+        model = MyWorkTask
+        fields = '__all__'
+
 
 
 class AccountForm(forms.ModelForm):

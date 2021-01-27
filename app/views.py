@@ -14,7 +14,7 @@ from django.views import generic
 
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
     PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm, AccountForm, EventForm, \
-    CalendarForm
+    CalendarForm, MyWorkTaskForm
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
     MyWorkTask, Account, Event,Calendars
 import random
@@ -585,19 +585,18 @@ def my_award_task(request,user_id):
 def manage_work_task(request):
     user_id = request.session.get('user')
     user = UserProfile.objects.get(id = user_id)
-    log('ggyy')
-    try:
-        tasks = get_list_or_404(MyWorkTask,user=user_id,isfinish=False)
-        context = {'tasks':tasks}
-        log('here')
-        return render(request, 'account/nonfinish_work_task.html', context)
-    except:
-        tasks = WorkTask.objects.all()
-        context = {'tasks': tasks}
-        return render(request, 'account/manage_work_task.html', context)
+    # try:
+    tasks = get_list_or_404(MyWorkTask,user=user_id,isfinish=False)
+    context = {'tasks':tasks}
+    return render(request, 'account/nonfinish_work_task.html', context)
+    # except:
+    #     tasks = WorkTask.objects.all()
+    #     context = {'tasks': tasks}
+    #     return render(request, 'account/manage_work_task.html', context)
 
 
 
+#發布工作任務
 def create_work_task(request):
     user_id = request.session.get('user')
     work_form : WorkTaskForm()
@@ -614,6 +613,33 @@ def create_work_task(request):
         worktask_form = WorkTaskForm(initial={'userprofile': userprofile})
         context = {'worktask_form':worktask_form}
     return render(request,'account/create_work_task.html',context)
+
+
+# 由好好後台指派工作任務
+def assign_work_task(request):
+    user_id = request.session.get('user')
+    my_work_task_form : MyWorkTaskForm()
+    if request.method == 'POST':
+        my_work_task_form = MyWorkTaskForm(request.POST)
+        if my_work_task_form.is_valid():
+            cd = my_work_task_form.cleaned_data
+            my_work_task = MyWorkTask.objects.create(**cd)
+            my_work_task.save()
+            return redirect('app:work_task_list')
+    else:
+        user = User.objects.get(id=user_id)
+        userprofile = user.userprofile
+        myworktask_form = WorkTaskForm(initial={'userprofile': userprofile})
+        context = {'myworktask_form': myworktask_form}
+    return render(request, 'account/assign_work_task.html', context)
+
+
+#工作任務列表
+def work_task_list(request):
+    tasks = MyWorkTask.objects.all()
+    context = {'tasks':tasks}
+    return render(request,'account/work_task_list.html',context)
+
 
 
 def accept_work_task(request,task_id,task):

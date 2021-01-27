@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+    指派個人工作任務
+{% endblock %}
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ myworktask_form.media }}
+        {{ myworktask_form.as_p |safe }}
+        <input type="hidden" value="{{ next }}">
+        <input type="submit" value="新增"/>
+    </form>
+{% endblock %}｝

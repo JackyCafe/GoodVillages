@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %} 工作任務列表
+{% endblock %}
+{% block content %}
+ <table class="table" overflow=”auto”>
+    <thead></thead>
+    <tr><th scope="row">日期</th>
+    <th scope="row">工作任務</th>
+    <th scope="row">執行人員</th>
+    <th scope="row">開始時間</th>
+    <th scope="row">結束時間</th>
+    </tr><tbody>
+    {% for task in tasks %}
+        <tr>
+        <td>{{ task.date }}</td>
+        <td>{{ task.task }}</td>
+        <td> {{ task.user.user.userprofile }}</td>
+            {% if task.start_time %}
+        <td>{{ task.start_time }}</td>{% else %}<td></td>
+            {% endif %}
+            {% if task.end_time %}
+        <td>{{ task.end_time }}</td>
+        {% else %}<td></td>
+        {% endif %}
+        </tr>
+    {% endfor %}</tbody>
+</table>
+{% endblock %}

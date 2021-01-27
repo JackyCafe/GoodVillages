@@ -200,6 +200,7 @@ class MyAwardTask(models.Model):
         return self.task_name
 
 
+#工作任務
 class WorkTask(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='worktask_assigner', verbose_name='任務發布者')
     task_name = models.CharField(max_length=32, verbose_name='任務名稱', null=True)
@@ -216,7 +217,7 @@ class WorkTask(models.Model):
     def __str__(self):
         return self.task_name
 
-
+#我的工作任務
 class MyWorkTask(models.Model):
     user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,related_name='myworktask_accepter',verbose_name='任務接受者')
     task = models.ForeignKey(WorkTask,on_delete=models.CASCADE,related_name='myworktask',verbose_name='任務名稱')

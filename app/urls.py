@@ -52,6 +52,8 @@ urlpatterns = [
     #工作任務
     path('manage_work_task/',views.manage_work_task,name ='manage_work_task'),
     path('create_work_task/', views.create_work_task, name='create_work_task'),
+    path('assign_work_task/', views.assign_work_task, name='assign_work_task'),
+    path('work_task_list/', views.work_task_list, name='work_task_list'),
     path('accept_work_task/<int:task_id>/<slug:task>', views.accept_work_task, name='accept_work_task'),
     path('worktask_start_count/<slug:task>',views.worktask_start_count,name='worktask_start_count'),
     path('worktask_end_count/<slug:task>',views.worktask_end_count,name='worktask_end_count'),
