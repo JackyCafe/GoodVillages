@@ -629,7 +629,7 @@ def assign_work_task(request):
     else:
         user = User.objects.get(id=user_id)
         userprofile = user.userprofile
-        myworktask_form = WorkTaskForm(initial={'userprofile': userprofile})
+        myworktask_form = MyWorkTaskForm(initial={'userprofile': userprofile})
         context = {'myworktask_form': myworktask_form}
     return render(request, 'account/assign_work_task.html', context)
 
@@ -641,7 +641,7 @@ def work_task_list(request):
     return render(request,'account/work_task_list.html',context)
 
 
-
+# accept work_task
 def accept_work_task(request,task_id,task):
     user_id = request.session.get('user')
     tasks = get_object_or_404(WorkTask,id=task_id, slug=task)

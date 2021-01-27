@@ -222,7 +222,7 @@ class MyWorkTask(models.Model):
     user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,related_name='myworktask_accepter',verbose_name='任務接受者')
     task = models.ForeignKey(WorkTask,on_delete=models.CASCADE,related_name='myworktask',verbose_name='任務名稱')
     slug = RandomCharField(length=32, unique=True, unique_for_date='publish')
-    date = models.DateField(auto_created=True,null=True)
+    date = models.DateField(auto_now=True,null=True)
     start_time = models.DateTimeField(auto_now_add=False,verbose_name='任務開始時間',null=True)
     end_time = models.DateTimeField(auto_now_add=False,verbose_name='任務結束時間',null=True)
     isfinish = models.BooleanField(default=False)

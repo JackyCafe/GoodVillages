@@ -171,7 +171,7 @@ class MyWorkTaskForm(forms.ModelForm):
 
     class Meta:
         model = MyWorkTask
-        fields = '__all__'
+        fields = ['task','user',]
 
 
 

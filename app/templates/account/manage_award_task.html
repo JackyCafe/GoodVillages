@@ -49,85 +49,85 @@
     {% endfor %}
     </div>
 
-        <div class="row" style="background: #f6f6f6;height: 3em;">待認領任務</div>
-     <div class="card-columns">
-        {% for task in wait_accept_tasks %}
-        <div class="card">
-        <div class="card-header ">
-            {% if task.accept_man %}
-                {{ task.user }}有{{ task.task_name }}需求
-            {% elif task.approve_man%}
-                <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
-                {{ task.user }}有{{ task.task_name }}需求
-            {% else %}
-                {{ task.user }}有{{ task.task_name }}需求 待審核
-            {% endif %}
-            </a>
-        </div>
-          {% if task.photo %}
-                <img  src="{{ task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 70%;height: 70%" >
-            {% endif %}
-            <div class="card-body">
-            <div class="card-text"> {{ task.task_content|safe }}
-             發布日期：{{ task.publish }}
-            <p>
-             {% if task.approve_man %}
-            {{ task.approve_man.userprofile }} {{ task.approve_time }}審核
-            {% endif %}
-            </p>
-            </div>
-                </div>
-            <div class="card-footer" >
-            {% if task.accept_man %}
-                {{ task.accept_man.userprofile }} {{ task.approve_time }}接單
-            {% else %}
-                尚未接單
-            {% endif %}
-
-            </div>
-        </div>
-    {% endfor %}
-    </div>
-    <div class="row" style="background: #f6f6f6;height: 3em;">待審核任務</div>
-    <div class="card-columns">
-        {% for task in wait_release_tasks %}
-        <div class="card">
-        <div class="card-header ">
-            {% if task.accept_man %}
-                {{ task.user }}有{{ task.task_name }}需求
-            {% elif task.approve_man%}
-                <a href="{% url 'app:accept_award_task' task.id request.user.id %}">
-                {{ task.user }}有{{ task.task_name }}需求
-            {% else %}
-                {{ task.user }}有{{ task.task_name }}需求 待審核
-            {% endif %}
-            </a>
-        </div>
-            {% if task.photo %}
-                <img  src="{{ task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 70%;height: 70%" >
-            {% endif %}
-            <div class="card-body">
-            <div class="card-text"> {{ task.task_content|safe }}
-
-             發布日期：{{ task.publish }}
-            <p>
-             {% if task.approve_man %}
-            {{ task.approve_man.userprofile }} {{ task.approve_time }}審核
-            {% endif %}
-            </p>
-            </div>
-                </div>
-            <div class="card-footer" >
-            {% if task.accept_man %}
-                {{ task.accept_man.userprofile }} {{ task.approve_time }}接單
-            {% else %}
-                尚未接單
-            {% endif %}
-
-            </div>
-        </div>
-    {% endfor %}
-    </div>
+{#    <div class="row" style="background: #f6f6f6;height: 3em;">待認領任務</div>#}
+{#     <div class="card-columns">#}
+{#        {% for task in wait_accept_tasks %}#}
+{#        <div class="card">#}
+{#        <div class="card-header ">#}
+{#            {% if task.accept_man %}#}
+{#                {{ task.user }}有{{ task.task_name }}需求#}
+{#            {% elif task.approve_man%}#}
+{#                <a href="{% url 'app:accept_award_task' task.id request.user.id %}">#}
+{#                {{ task.user }}有{{ task.task_name }}需求#}
+{#            {% else %}#}
+{#                {{ task.user }}有{{ task.task_name }}需求 待審核#}
+{#            {% endif %}#}
+{#            </a>#}
+{#        </div>#}
+{#          {% if task.photo %}#}
+{#                <img  src="{{ task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 70%;height: 70%" >#}
+{#            {% endif %}#}
+{#            <div class="card-body">#}
+{#            <div class="card-text"> {{ task.task_content|safe }}#}
+{#             發布日期：{{ task.publish }}#}
+{#            <p>#}
+{#             {% if task.approve_man %}#}
+{#            {{ task.approve_man.userprofile }} {{ task.approve_time }}審核#}
+{#            {% endif %}#}
+{#            </p>#}
+{#            </div>#}
+{#                </div>#}
+{#            <div class="card-footer" >#}
+{#            {% if task.accept_man %}#}
+{#                {{ task.accept_man.userprofile }} {{ task.approve_time }}接單#}
+{#            {% else %}#}
+{#                尚未接單#}
+{#            {% endif %}#}
+{##}
+{#            </div>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#    </div>#}
+{#    <div class="row" style="background: #f6f6f6;height: 3em;">待審核任務</div>#}
+{#    <div class="card-columns">#}
+{#        {% for task in wait_release_tasks %}#}
+{#        <div class="card">#}
+{#        <div class="card-header ">#}
+{#            {% if task.accept_man %}#}
+{#                {{ task.user }}有{{ task.task_name }}需求#}
+{#            {% elif task.approve_man%}#}
+{#                <a href="{% url 'app:accept_award_task' task.id request.user.id %}">#}
+{#                {{ task.user }}有{{ task.task_name }}需求#}
+{#            {% else %}#}
+{#                {{ task.user }}有{{ task.task_name }}需求 待審核#}
+{#            {% endif %}#}
+{#            </a>#}
+{#        </div>#}
+{#            {% if task.photo %}#}
+{#                <img  src="{{ task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 70%;height: 70%" >#}
+{#            {% endif %}#}
+{#            <div class="card-body">#}
+{#            <div class="card-text"> {{ task.task_content|safe }}#}
+{##}
+{#             發布日期：{{ task.publish }}#}
+{#            <p>#}
+{#             {% if task.approve_man %}#}
+{#            {{ task.approve_man.userprofile }} {{ task.approve_time }}審核#}
+{#            {% endif %}#}
+{#            </p>#}
+{#            </div>#}
+{#                </div>#}
+{#            <div class="card-footer" >#}
+{#            {% if task.accept_man %}#}
+{#                {{ task.accept_man.userprofile }} {{ task.approve_time }}接單#}
+{#            {% else %}#}
+{#                尚未接單#}
+{#            {% endif %}#}
+{##}
+{#            </div>#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#    </div>#}
 
 
 
