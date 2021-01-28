@@ -381,6 +381,50 @@ def my_team_tasks_link(request):
             ,'task':group.task}
         tasks.append(task_set)
     context = {'tasks':tasks}
+    # 計算獎勵
+    # 1. 找出team_task finish >0
+    # 2. 找出相對group 的user
+    # 3. 找出 my_team_task.is_award = False
+    # 4. 點數轉入個人帳戶.
+    # 5. my_team_task.is_award = True
+
+    # teams_id = TeamTask.objects.filter(finish_date__isnull=False).values('group__group')
+    teams = TeamTask.objects.filter(finish_date__isnull=False)
+    point = teams.values('point')
+    teams_id = list(teams.values('group__group'))
+    for id in teams_id:
+        user_obj = MyTeamTask.objects.filter(id = id['group__group']).filter(is_award=False)
+
+        profile_ids = user_obj.values('user__userprofile')
+        id = user_obj.values('id')[0]
+        for profile in profile_ids:
+            profile = UserProfile.objects.get(id = profile['user__userprofile'])
+            account = Account.objects.create(user=profile, deposit=point,
+                                         transaction_date=datetime.now(),
+                                         transaction_memo='團隊任務')
+            account.save()
+
+        task = MyTeamTask.objects.get(id = id['id'])
+        task.is_award = True
+        task.save()
+
+
+        # 點數轉入個人帳戶.
+    # for pt in ptasks:
+    #     log(pt)
+        # task_id = person_task['id']
+        # # 把personal is_award update 為True
+        # task = PersonalTask.objects.get(id=task_id)
+        # task.is_award = True
+        # task.save()
+        # # 新增至個人帳號
+        # account = Account.objects.create(user=user.userprofile, deposit=int(person_task['point']),
+        #                                  transaction_date=datetime.now(),
+        #                                  transaction_memo='工作任務')
+        # account.save()
+
+
+
     return render(request,'account/my_team_task.html',context)
 
 
@@ -405,147 +449,6 @@ def update_team_task(request, id, task):
     tasks.finish_date = datetime.today().date()
     tasks.save()
     return HttpResponse(task)
-#2021/01/28 mark
-# def my_team_tasks_link(request):
-#     user_id = request.session.get('user')
-#     team_tasks = TeamTask.objects.filter(end_date__gte=today)
-#
-#     task_list = []
-#     # task : 目前未結案的團隊任務
-#     for task in team_tasks:
-#         group_ids = task.group_set.values().filter(is_active=True)
-#         task_name = task.task_name
-#         task_id = task.id
-#         group_list = []
-#         for group_set in group_ids:
-#             users = []
-#             group_name = group_set['group_name']
-#             id = group_set['id']
-#             group = Group.objects.get(id=id)
-#             _ids = Group.objects.filter(id=id).values('group__user_id')
-#             for _id in _ids:
-#                 user = User.objects.filter(id=_id['group__user_id']).values('userprofile__actual_name')[0]
-#                 users.append(user['userprofile__actual_name'])
-#             result_set = {'group': group_name, 'group_id': id, 'users': users}
-#             group_list.append(result_set)
-#         task_set = {'task_name': task_name, 'task_id': task_id, 'group_list': group_list}
-#         task_list.append(task_set)
-#
-#     context = {'user_id': user_id, 'tasks': task_list}
-#     return render(request, 'account/my_team_task.html', context)
-#
-#
-# # #我的團隊任務
-# # def my_team_tasks_link(request):
-# #     user_id = request.session.get('user')
-# #     team_tasks = TeamTask.objects.filter(end_date__gte=today)
-# #
-# #     task_list=[]
-# #     # task : 目前未結案的團隊任務
-# #     for task in team_tasks:
-# #         group_ids = task.group_set.values().filter(is_active=True)
-# #         task_name = task.task_name
-# #
-# #         group_list = []
-# #         for group_set in group_ids:
-# #             users = []
-# #             group_name = group_set['group_name']
-# #             id = group_set['id']
-# #             group = Group.objects.get(id=id)
-# #
-# #             # 經由through 找到foregin key
-# #             # group.group.through.objects.filter(group_id=id) ==>找到對應的table my_teamtask_group
-# #             # ...filter(group_id=id).values('myteamtask_id') ==>找到對應的myteamtask_id key值
-# #             myteamtask_ids = group.group.through.objects.filter(group_id=id).values('myteamtask_id')
-# #             for myteamtask_id in myteamtask_ids:
-# #                 # logger.info(myteamtask_id)
-# #                 user = MyTeamTask.objects.get(id = myteamtask_id.get('myteamtask_id')).user.userprofile.actual_name
-# #                 users.append(user)
-# #             result_set={'group':group_name,'group_id':id,'users':users}
-# #             group_list.append(result_set)
-# #         # logger.info(group_list)
-# #         task_set={'task_name':task_name,'group_list':group_list}
-# #         task_list.append(task_set)
-# #     logger.info(task_list)
-# #     context = {'user_id':user_id,'tasks':task_list}
-# #     return render(request,'account/my_team_task.html',context)
-#
-#
-# # user 點選我要加入
-# # user_id -->request.session
-# # group_id --> myteamtask_id
-#
-# def add_team_task(request, user_id, group_id):
-#     user = User.objects.get(id=user_id)
-#     my_team_tasks = MyTeamTask.objects.filter(user_id=user_id)
-#     task_id = my_team_tasks.values('group__task_id')
-#     group_names = my_team_tasks.values('group__group_name')
-#     group_set = my_team_tasks.values('group__id')
-#     group_ids = []
-#     for group in group_set:
-#         group_ids.append(group['group__id'])
-#
-#     team_task_ids = my_team_tasks.values('id')
-#     # log(team_task_ids)
-#
-#     # if QuerySet:[]
-#     # -->create new_team_task ,
-#     # -->Create new_group_record,
-#     # t1(through).save
-#     if not my_team_tasks:
-#         new_team_tasks = MyTeamTask.objects.create(user_id=user_id, point=0, is_award=0)
-#         new_team_tasks.save()
-#         new_group = Group.objects.get(id=group_id)
-#         t1 = new_team_tasks.group.through.objects.create(myteamtask=new_team_tasks, group=new_group)
-#         t1.save()
-#         message = '已新增'
-#         logger.info('已新增')
-#     elif group_id not in group_ids:
-#         new_team_tasks = MyTeamTask.objects.create(user_id=user_id, point=0, is_award=0)
-#         new_team_tasks.save()
-#         new_group = Group.objects.get(id=group_id)
-#         t1 = new_team_tasks.group.through.objects.create(myteamtask=new_team_tasks, group=new_group)
-#         t1.save()
-#         message = '已新增'
-#         logger.info('已新增')
-#     else:
-#         log('已在群組中')
-#
-#     return redirect('app:my_team_tasks_link')
-#
-#
-# # 我要組隊
-# def create_group(request):
-#     group_form: CreateGroupForm()
-#     user_id = request.session.get('user')
-#     group = Group()
-#     if request.method == 'POST':
-#         group_form = CreateGroupForm(request.POST)
-#         if group_form.is_valid():
-#             group = group_form.save()
-#             new_team_tasks = MyTeamTask.objects.create(user_id=user_id, point=0, is_award=0)
-#             new_team_tasks.save()
-#             t1 = new_team_tasks.group.through.objects.create(myteamtask=new_team_tasks, group=group)
-#             t1.save()
-#             return redirect('app:my_team_tasks_link')
-#     else:
-#         user = User.objects.get(id=user_id)
-#         userprofile = user.userprofile
-#         group_form = CreateGroupForm(initial={'userprofile': userprofile})
-#     return render(request, 'account/create_group.html', {'group_form': group_form})
-#
-#
-# def manage_team_task(request, task_id, group_id, user_id):
-#     tasks = TeamTask.objects.filter(id=task_id).all()
-#     group = Group.objects.filter(id=group_id)
-#     ids = group.values('group__user_id')
-#     users = []
-#     for id in ids:
-#         useranme = User.objects.get(id=id['group__user_id']).userprofile
-#         users.append(useranme)
-#
-#     context = {'tasks': tasks, 'group_id': group_id, 'user_id': user_id, 'users': users}
-#     return render(request, 'account/manage_group.html', context)
 
 
 def manage_award_task(request):
