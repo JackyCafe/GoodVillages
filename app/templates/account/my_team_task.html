@@ -1,34 +1,35 @@
 {% extends 'base.html' %}
-{% load task_tags %}
 {% block title %}
 
     我的團隊任務
 {% endblock %}
 {% block content %}
-    <a href="{% url 'app:create_group' %}">我要組隊</a>
-   <p> 目前已有隊伍</p>
-    <div class="card-group">
-        <div class="card">
-            {% for task in tasks %}
-                <div class="card-body" style="background-color: #9efcb5;" >{{ task.task_name }}</div>
-                {%for groups in task.group_list %}
-                    <div class="card-header" style="background-color: #399699">
-                        {{ task.task_id }}
-                        {{ groups.group_id }}
-                        <a href="{% url 'app:manage_team_task' task.task_id groups.group_id user_id   %}"> {{ groups.group }}</a>
-                    </div>
+     <div class="container">
+     <div class="row">  <div class="card-columns">
+        {% for task in tasks %}
+              <div class="card">
+                <div class="card-header ">
+                   {{ task.group_name }}
+                    <a href="{% url 'app:add_teamtask' request.user.id  task.group_id  %}" class="button btn">參加</a>
+                    <a href="{{ task.task.generate_team_qr_code  }} " class='button btn'>驗證</a>
 
-                    <div class="card-body"><ul class="list-group">
-                    {% for user in groups.users %}
-                        <li  class="list-group-item">{{ user }}</li>
-                    {% endfor %}
-                    </ul>
-                    </div>
-                {% endfor %}
 
-            {% endfor %}
+                </div>
+               <div class="card-body">
+            <div class="card-text">
+                 </div> </div>
+              {{ task.task.task_content|safe }}
+                  <p> 目前成員
+                  {% for user in task.users %}
+                     <p></p> {{ user }}
+                  {% endfor %}
 
-            </div> {#  <div class="card"> #}
-    </div>{#    <div class="card-group">#}
+                <div class="card-footer">
+                 發布日期　{{ task.task.publish }}
+            </div>
 
+              </div>
+        {% endfor %}
+     </div>
+     </div></div>
 {% endblock %}

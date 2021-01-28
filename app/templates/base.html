@@ -43,6 +43,7 @@
         <a class="nav-link" href="{% url 'app:my_personal_tasks' %}">每日任務</a></h4>
       </li>
       <li class="nav-item"><h4>
+{#          <a class="nav-link" href="#">團隊任務</a></h4>#}
         <a class="nav-link" href="{% url 'app:my_team_tasks_link' %}">團隊任務</a></h4>
       </li>
         <li class="nav-item"><h4>
@@ -70,8 +71,11 @@
           <a class="dropdown-item" href="{% url 'app:register' %}">住民註冊</a>
           <a class="dropdown-item" href="{% url 'app:create_task' %}">創建個人任務</a>
            <a class="dropdown-item" href="{% url 'app:task_list' %}">個人任務列表</a>
+           <a class="dropdown-item" href="{% url 'app:create_team_tasks' %}">創建團隊任務</a>
+
            <a class="dropdown-item" href="{% url 'app:release_award_task' %}">懸賞任務審核</a>
            <a class="dropdown-item" href="{% url 'app:scan_qrcode'%}">個人任務登記</a>
+           <a class="dropdown-item" href="{% url 'app:create_work_task' %}">創建工作任務</a>
            <a class="dropdown-item" href="{% url 'app:assign_work_task' %}">工作任務指派</a>
            <a class="dropdown-item" href="{% url 'app:work_task_list' %}">工作任務列表</a>
 

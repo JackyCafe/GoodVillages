@@ -20,7 +20,7 @@
     {% for task in tasks %}
         <tr>
         <td data-th="任務名稱">{{ task.task_name|safe }}</td>
-        <td data-th=任務內容"">{{ task.task_content|safe }}</td>
+        <td data-th="任務內容">{{ task.task_content|safe }}</td>
         <td data-th="發布日期" class="date">{{ task.publish|safe }}</td>
            {% if task.is_vaild == True %}
             <td data-th="任務有效性"><input type="radio" checked>  </td>

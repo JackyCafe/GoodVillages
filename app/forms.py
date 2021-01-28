@@ -103,11 +103,16 @@ class CreateTeamTaskForm(forms.ModelForm):
         super(CreateTeamTaskForm,self).__init__(*args,**kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        self.fields['start_date'].input_formats = ('%Y-%m-%dT%H:%M',)
+        self.fields['end_date'].input_formats = ('%Y-%m-%dT%H:%M',)
 
     class Meta:
         model = TeamTask
         fields = '__all__'
-
+        widgets = {
+            'start_date': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'end_date': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+        }
 
 #開群組
 class CreateGroupForm(forms.ModelForm):

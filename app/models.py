@@ -47,7 +47,7 @@ class Account(models.Model):
 # 任務
 class Task(models.Model):
     TASK_CHOICE = (('daily_task', '每日任務')
-                   # , ('team_task', '團隊任務')
+                   , ('team_task', '團隊任務')
                    # , ('reward_task', '懸賞任務')
                    , ('work_task', '工作任務'))
     task_name = models.CharField(max_length=32, verbose_name='任務名稱')
@@ -141,7 +141,15 @@ class TeamTask(models.Model):
     publish = models.DateField(default=timezone.now, verbose_name='任務發布時間')
     start_date = models.DateField(auto_now_add=False,verbose_name='活動開始時間',null=True)
     end_date = models.DateField(auto_now_add=False,verbose_name='活動結束時間',null=True)
+    finish_date = models.DateField(auto_now_add=False,verbose_name='活動結束時間',null=True)
     point = models.IntegerField(default=0,verbose_name='點數')
+
+
+    def generate_team_qr_code(self):
+        return reverse('app:generate_team_qr_code', args=[self.id, self.slug])
+
+    def update_team_task(self):
+        return reverse('app:update_team_task', args=[self.id, self.slug])
 
     def __str__(self):
        return self.task_name

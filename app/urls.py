@@ -36,11 +36,17 @@ urlpatterns = [
     path('update_personal_task/<int:id>/<slug:task>', views.update_personal_task, name='update_personal_task'),
     path('scan_qrcode/', views.scan_qrcode, name='scan_qrcode'),
     path('my_personal_tasks/', views.my_personal_tasks, name='my_personal_tasks'),
-    path('my_team_tasks_link/', views.my_team_tasks_link, name='my_team_tasks_link'),
-    path('create_team_tasks/', views.my_team_tasks_link, name='create_team_tasks'),
-    path('create_group/', views.create_group, name='create_group'),
-    path('add_team_task/<int:user_id>/<int:group_id>',views.add_team_task,name='add_team_task'),
-    path('manage_team_task/<int:task_id>/<int:group_id>/<int:user_id>/', views.manage_team_task, name='manage_team_task'),
+#團隊任務 2021/01/28 mark
+    path('my_team_tasks_link/', views.my_team_tasks_link, name='my_team_tasks_link'), #在工具列中點選，看出還有幾個任務可加入
+    path('add_teamtask/<int:user_id>/<int:group_id>',views.add_teamtask,name='add_teamtask'),
+    path('generate_team_qr_code/<int:id>/<slug:task>', views.generate_team_qr_code, name='generate_team_qr_code'),
+    path('update_team_task/<int:id>/<slug:task>', views.update_team_task, name='update_team_task'),
+
+    # path('confirm_teamtask/',views.confirm_teamtask,name = 'confirm_teamtask'),
+    # path('create_team_tasks/', views.my_team_tasks_link, name='create_team_tasks'),
+    # path('create_group/', views.create_group, name='create_group'),
+    # path('manage_team_task/<int:task_id>/<int:group_id>/<int:user_id>/', views.manage_team_task, name='manage_team_task'),
+    path('create_team_tasks/', views.create_team_tasks, name='create_team_tasks'), # admin ->create team task
     #懸賞任務
     path('manage_award_task/', views.manage_award_task, name='manage_award_task'),#懸賞主頁
     path('create_award_task',views.create_award_task, name= 'create_award_task'),# 發布任務

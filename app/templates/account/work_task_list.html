@@ -2,25 +2,29 @@
 {% block title %} 工作任務列表
 {% endblock %}
 {% block content %}
- <table class="table" overflow=”auto”>
-    <thead></thead>
-    <tr><th scope="row">日期</th>
+  <table 	class="my-table table-hover table-striped my-table-bordered table-rwd">
+
+    <thead>
+    <tr class="tr-only-hide">
+    <th scope="row">日期</th>
     <th scope="row">工作任務</th>
     <th scope="row">執行人員</th>
     <th scope="row">開始時間</th>
     <th scope="row">結束時間</th>
-    </tr><tbody>
+    </tr></thead>
+    <tbody>
     {% for task in tasks %}
-        <tr>
-        <td>{{ task.date }}</td>
-        <td>{{ task.task }}</td>
-        <td> {{ task.user.user.userprofile }}</td>
+        <tr >
+        <td data-th="日期">{{ task.date }}</td>
+        <td data-th="工作任務">{{ task.task }}</td>
+        <td data-th="執行人員"> {{ task.user.user.userprofile }}</td>
             {% if task.start_time %}
-        <td>{{ task.start_time }}</td>{% else %}<td></td>
+        <td data-th="開始時間">{{ task.start_time }}</td>{% else %}
+                <td data-th="開始時間"></td>
             {% endif %}
             {% if task.end_time %}
-        <td>{{ task.end_time }}</td>
-        {% else %}<td></td>
+        <td data-th="結束時間">{{ task.end_time }}</td>
+        {% else %}<td data-th="結束時間"></td>
         {% endif %}
         </tr>
     {% endfor %}</tbody>

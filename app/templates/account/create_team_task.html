@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}
+    創建團隊任務
+{% endblock %}
+{% block content %}
+    <form method="post" >
+        {% csrf_token %}
+        {{ create_team_task_form.media }}
+        {{ create_team_task_form.as_p |safe }}
+        <input type="hidden" value="{{ next }}">
+        <input type="submit" value="新增"/>
+    </form>
+
+
+{% endblock %}
