@@ -424,8 +424,6 @@ def my_team_tasks_link(request):
         #                                  transaction_memo='工作任務')
         # account.save()
 
-
-
     return render(request,'account/my_team_task.html',context)
 
 
