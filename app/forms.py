@@ -108,7 +108,8 @@ class CreateTeamTaskForm(forms.ModelForm):
 
     class Meta:
         model = TeamTask
-        fields = '__all__'
+        fields = ('task_name','task_content','start_date','end_date','point')
+
         widgets = {
             'start_date': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
             'end_date': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),

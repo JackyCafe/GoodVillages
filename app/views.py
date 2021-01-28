@@ -396,19 +396,20 @@ def my_team_tasks_link(request):
         user_obj = MyTeamTask.objects.filter(id = id['group__group']).filter(is_award=False)
 
         profile_ids = user_obj.values('user__userprofile')
-        id = user_obj.values('id')[0]
-        for profile in profile_ids:
-            profile = UserProfile.objects.get(id = profile['user__userprofile'])
-            account = Account.objects.create(user=profile, deposit=point,
-                                         transaction_date=datetime.now(),
-                                         transaction_memo='團隊任務')
-            account.save()
+        try:
+            id = user_obj.values('id')[0]
+            for profile in profile_ids:
+                profile = UserProfile.objects.get(id = profile['user__userprofile'])
+                account = Account.objects.create(user=profile, deposit=point,
+                                             transaction_date=datetime.now(),
+                                             transaction_memo='團隊任務')
+                account.save()
 
-        task = MyTeamTask.objects.get(id = id['id'])
-        task.is_award = True
-        task.save()
-
-
+            task = MyTeamTask.objects.get(id = id['id'])
+            task.is_award = True
+            task.save()
+        except:
+            pass
         # 點數轉入個人帳戶.
     # for pt in ptasks:
     #     log(pt)
