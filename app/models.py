@@ -130,7 +130,7 @@ class PersonalTask(models.Model):
         return reverse('app:generate_qr_code', args=[self.id, self.slug])
 
     def update_personal_task(self):
-        return reverse('app:update_personal_task', args=[self.id, self.slug])
+        return reverse('app:update_personal_task', args=[self.id,self.user.user_id, self.slug])
 
 
 # 管理員發布的團隊任務

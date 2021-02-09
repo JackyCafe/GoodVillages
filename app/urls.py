@@ -33,10 +33,12 @@ urlpatterns = [
     path('invalidTask/<int:year>/<int:month>/<int:day>/<slug:task>/<int:vaild>', views.invalidTask, name='invalidTask'),  # 任務生效
     path('personal_task_add/', views.persontask_add, name='personal_task_add'),
     path('generate_qr_code/<int:id>/<slug:task>', views.generate_qr_code, name='generate_qr_code'),
-    path('update_personal_task/<int:id>/<slug:task>', views.update_personal_task, name='update_personal_task'),
+    path('update_personal_task/<int:id>/<int:user_id>/<slug:task>', views.update_personal_task, name='update_personal_task'),
     path('scan_qrcode/', views.scan_qrcode, name='scan_qrcode'),
     path('my_personal_tasks/', views.my_personal_tasks, name='my_personal_tasks'),
-#團隊任務 2021/01/28 mark
+    path('vaild_my_person_task/',views.vaild_my_person_task,name='vaild_my_person_task'),
+
+    #團隊任務 2021/01/28 mark
     path('my_team_tasks_link/', views.my_team_tasks_link, name='my_team_tasks_link'), #在工具列中點選，看出還有幾個任務可加入
     path('add_teamtask/<int:user_id>/<int:group_id>',views.add_teamtask,name='add_teamtask'),
     path('generate_team_qr_code/<int:id>/<slug:task>', views.generate_team_qr_code, name='generate_team_qr_code'),

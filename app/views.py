@@ -260,14 +260,27 @@ def generate_qr_code(request, id, task):
 
 # 掃QR_CODE 網址，認證工作達成
 #
-def update_personal_task(request, id, task):
+def update_personal_task(request, id, user_id,task):
 
     tasks = get_object_or_404(PersonalTask, id=id, slug=task)
     tasks.finish_date = datetime.today().date()
     tasks.save()
-    return HttpResponse(task)
+    user = User.objects.get(id = user_id)
+    return render(request,'account/confirm_personal_task.html',context={'id':id,'user':user,'task':task})
 
 
+def vaild_my_person_task(request):
+    task = request.POST['task']
+    id = request.POST['id']
+    tasks = get_object_or_404(PersonalTask, id=id, slug=task)
+    password = request.POST['password']
+    log(password)
+    if password=='0520':
+        tasks.finish_date = datetime.today().date()
+        tasks.save()
+        return HttpResponse('ok')
+    else:
+        return HttpResponse('驗證碼錯誤')
 # 工作人員掃描QR_CODE的工具程式
 # todo html5 scan qrcode wait process
 def scan_qrcode(request):
