@@ -252,6 +252,7 @@ class MyWorkTask(models.Model):
 
 # 以下為行事曆
 # 2020/12/31
+# 園區行事曆
 
 class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -273,7 +274,8 @@ class Event(models.Model):
         return f'<a href="{url}"> {self.title} </a>'
 
 
-# 行事曆
+
+#2021/2/9 用步到的行事曆
 class Calendars(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='calendar_owner',verbose_name='發起人')
     title = models.CharField(max_length=64, verbose_name='標題')

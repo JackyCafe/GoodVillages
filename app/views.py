@@ -45,13 +45,13 @@ def dashboard(request):
     request.session['user'] = request.user.id
     user_id = request.user.id
 
-    calendars = Calendars.objects.all()
     # 今天沒有每日任務
     # 今天 如果沒有 每日任務，由系統產生一個
     #
 
-
     d = get_date(request.GET.get('month', None))
+    log(d)
+    calendars = Event.objects.filter(start_time__gt=d)
     cal = Calendar(d.year, d.month)
     html_cal = cal.formatmonth(user_id=user_id,withyear=True)
     context = {
@@ -753,21 +753,46 @@ def event_details(request, event_id):
     return render(request, 'account/event-details.html', context)
 
 
+#園區行事曆
 def create_calendar(request):
-    calendar_form : CalendarForm()
-    user_id = request.session.get('user')
-    user = User.objects.get(id = user_id)
+    authority = request.user.userprofile.authority
+    request.session['authority'] = authority
+    request.session['user'] = request.user.id
+    user_id = request.user.id
+    calendars = Calendars.objects.all()
+    d = get_date(request.GET.get('month', None))
+    cal = Calendar(d.year, d.month)
+    html_cal = cal.formatmonth(user_id=user_id, withyear=True)
+    context = {
+        'authority': authority,
+        'calendars': calendars,
+        'html_cal': html_cal,
+        'prev_month': prev_month(d),
+        'next_month': next_month(d)
+    }
 
-    if request.method=='POST':
-        calendar_form = CalendarForm(request.POST)
-        if calendar_form.is_valid():
-           cd = calendar_form.cleaned_data
-           calendar = Calendars.objects.create(user=user,**cd)
-           calendar.save()
-           return redirect(reverse('app:dashboard'))
-    else:
-        calendar_form = CalendarForm()
-        context = {'calendar_form':calendar_form}
-        return render(request, 'account/create_calendar.html', context)
+    return render(request,
+                  'account/create_calendar.html',
+                  context
+
+                  )
+
+
+
+    # calendar_form : CalendarForm()
+    # user_id = request.session.get('user')
+    # user = User.objects.get(id = user_id)
+    #
+    # if request.method=='POST':
+    #     calendar_form = CalendarForm(request.POST)
+    #     if calendar_form.is_valid():
+    #        cd = calendar_form.cleaned_data
+    #        calendar = Calendars.objects.create(user=user,**cd)
+    #        calendar.save()
+    #        return redirect(reverse('app:dashboard'))
+    # else:
+    #     calendar_form = CalendarForm()
+    #     context = {'calendar_form':calendar_form}
+    #     return render(request, 'account/create_calendar.html', context)
 
 

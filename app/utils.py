@@ -32,7 +32,7 @@ class Calendar(HTMLCalendar):
 
     def formatmonth(self,user_id ,withyear=True):
 
-        events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month,user = user_id)
+        events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month)
 
         cal = f'<table border="1" cellpadding="0" cellspacing="0" class="calendar">\n'
         cal += f'{self.formatmonthname(self.year, self.month, withyear=withyear)}\n'

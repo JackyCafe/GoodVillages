@@ -11,14 +11,14 @@
            <span> <h1 style="color:#38ff3b;" >園館行事曆</h1></span>
             <a class="btn btn-info left ml-0" href="{% url 'app:calendar' %}?{{ next_month }} ">下個月 </a>
                 <a class="btn btn-info left ml-0" href="{% url 'app:calendar' %}?{{ prev_month }}">上個月 </a>
-                <a class="btn btn-info left m1-0" href="{% url 'app:event_new' %}"> 新事件 </a>
+{#                <a class="btn btn-info left m1-0" href="{% url 'app:event_new' %}"> 新事件 #}
                     <div  style="color: blueviolet;">{{ html_cal|safe }}  </div>
     </div>
     <div class="col">
         <span> <h1 style="color:#38ff3b;">近日活動項目</h1></span>
          <ul class="list-group ">
                     {% for calendar in calendars %}
-                     <li class="list-group-item" >{{ calendar.title }}</li>
+                     <li class="list-group-item" >{{calendar.start_time }} {{ calendar.title }}</li>
                         {% endfor %}
                 </ul>
     </div>
