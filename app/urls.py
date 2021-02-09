@@ -77,7 +77,9 @@ urlpatterns = [
     path('event/edit/<int:pk>/', views.EventEdit.as_view(), name='event_edit'),
 
     #園區行事曆
-    path('create_calendar/',views.create_calendar,name='create_calendar')
-
+    path('create_calendar/',views.create_calendar,name='create_calendar'),
+    #我的
+    path('my_personal_data/', views.my_personal_data, name='my_personal_data'),
+    path('my_account/', views.my_account, name='my_account'),
 
 ]

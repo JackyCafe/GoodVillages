@@ -52,10 +52,18 @@
         <li class="nav-item"><h4>
         <a class="nav-link" href="{% url 'app:manage_work_task' %}">工作任務</a></h4>
       </li>
-     <li class="nav-item"><h4>
-        <a class="nav-link" href="#">我的帳戶</a></h4>
-      </li>
-    </ul>
+           <li class="navbar-nav .nav-pills mr-auto nav-item dropdown">
+        <button class="button btn nav-link dropdown-toggle"  id="navbarDropdown"
+           data-toggle="dropdown"  aria-expanded="false"
+
+        >
+          我的
+        </button>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'app:my_personal_data' %}">個人資料</a>
+          <a class="dropdown-item" href="{% url 'app:my_account' %}">點數</a>
+      </div>
+
     <ul>
 
 
@@ -82,8 +90,7 @@
            <a class="dropdown-item" href="{% url 'app:create_calendar' %}">園區行事曆</a>
            <a class="dropdown-item" href="{% url 'app:manage_account_value' %}">個人點數加值</a>
 
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+
         </div>
       </li>
         </ul>
