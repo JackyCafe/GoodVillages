@@ -14,7 +14,7 @@ from django.views import generic
 
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
     PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm, AccountForm, EventForm, \
-    CalendarForm, MyWorkTaskForm
+    MyWorkTaskForm
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
     MyWorkTask, Account, Event,Calendars
 import random
@@ -22,7 +22,6 @@ import logging
 import calendar
 
 
-# from .utils import Calendar
 from app.utils import Calendar
 
 logger = logging.getLogger(__name__)
@@ -673,8 +672,6 @@ def account_list(request,id,account_slug):
     return render(request,'account/account_value_list.html',context)
 
 
-
-
 def manage_account_value(request):
     accountForm: AccountForm
     user_id = request.session.get('user')
@@ -694,6 +691,7 @@ def manage_account_value(request):
         context = {'accountForm':accountForm}
     return render(request, 'account/create_account_value.html',context)
 
+
 #2020/12/31 以下為行事曆
 def get_date(req_day):
     if req_day:
@@ -701,11 +699,13 @@ def get_date(req_day):
         return date(year, month, day=1)
     return datetime.today()
 
+
 def prev_month(d):
     first = d.replace(day=1)
     prev_month = first - timedelta(days=1)
     month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
     return month
+
 
 def next_month(d):
     days_in_month = calendar.monthrange(d.year, d.month)[1]
@@ -714,8 +714,8 @@ def next_month(d):
     month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
     return month
 
-#CalendarView
 
+#CalendarView
 class CalendarView(LoginRequiredMixin, generic.ListView):
     login_url = 'signup'
     model = Event
@@ -730,6 +730,7 @@ class CalendarView(LoginRequiredMixin, generic.ListView):
         context['prev_month'] = prev_month(d)
         context['next_month'] = next_month(d)
         return context
+
 
 @login_required(login_url='signup')
 def create_event(request):
@@ -754,6 +755,7 @@ class EventEdit(generic.UpdateView):
     model = Event
     fields = ['title', 'description', 'start_time', 'end_time']
     template_name = 'event.html'
+
 
 @login_required(login_url='signup')
 def event_details(request, event_id):
@@ -793,6 +795,8 @@ def create_calendar(request):
 
 # 我的
 def my_personal_data(request):
+    user_id = request.session.get('user')
+    user = User.objects.get(id = user_id)
     return HttpResponse('')
 
 

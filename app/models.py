@@ -17,6 +17,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userprofile')
     actual_name = models.CharField(max_length=10, verbose_name='姓名')
     authority = models.CharField(max_length=20, verbose_name='身分', choices=AUTHORITY_CHOICE, default='resident')
+    self_introduction = models.TextField(verbose_name='')
     photo = models.ImageField(upload_to='users/%Y/%m/%d/', null=True, blank=True, verbose_name='照片')
 
 
