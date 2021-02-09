@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import ModelForm, DateInput
 from django.utils.datastructures import MultiValueDict
+from django.utils.safestring import mark_safe
 
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account, Event, \
     Calendars, MyWorkTask
@@ -34,18 +35,26 @@ class UserRegistrationForm(forms.ModelForm):
 
 # 修改基本資料
 class UserEditForm(forms.ModelForm):
+    # password = forms.CharField(label='輸入密碼', widget=forms.PasswordInput)
+    # password2 = forms.CharField(label='再次輸入密碼', widget=forms.PasswordInput)
+
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields =('username',)
 
 
 # 修改Profile
 class ProfileEditForm(forms.ModelForm):
-    authority = forms.ChoiceField(choices=UserProfile.AUTHORITY_CHOICE, label='身分')
+    # authority = forms.ChoiceField(choices=UserProfile.AUTHORITY_CHOICE, label='身分')
+    photo = forms.ImageField(label=('我的照片'),required=False
+                                , error_messages = {'invalid':("Image files only")}
+                                , widget=forms.FileInput)
 
     class Meta:
         model = UserProfile
-        fields = ('actual_name', 'photo')
+        fields = ('actual_name','self_introduction','open_point',"photo" )
+
+
 
 
 # 創任務

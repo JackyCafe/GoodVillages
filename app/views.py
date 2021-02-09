@@ -131,7 +131,7 @@ def register(request):
 
 
 @login_required
-def edit(request):
+def edit_personal_data(request):
     user_form: UserEditForm
     profile_form: ProfileEditForm
 
@@ -141,16 +141,20 @@ def edit(request):
         profile_form = ProfileEditForm(instance=request.user.userprofile,
                                        data=request.POST,
                                        files=request.FILES)
-
+        log(user_form.is_valid())
+        log(profile_form.is_valid())
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+            return redirect('app:edit_personal_data')
 
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.userprofile)
+        image = request.user.userprofile.photo.url
         return render(request, 'account/edit.html', {'user_form': user_form,
-                                                     'profile_form': profile_form})
+                                                     'profile_form': profile_form,
+                                                     'image':image})
 
 
 # 創建任務
