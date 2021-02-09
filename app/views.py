@@ -791,21 +791,10 @@ def create_calendar(request):
                   )
 
 
-
-    # calendar_form : CalendarForm()
-    # user_id = request.session.get('user')
-    # user = User.objects.get(id = user_id)
-    #
-    # if request.method=='POST':
-    #     calendar_form = CalendarForm(request.POST)
-    #     if calendar_form.is_valid():
-    #        cd = calendar_form.cleaned_data
-    #        calendar = Calendars.objects.create(user=user,**cd)
-    #        calendar.save()
-    #        return redirect(reverse('app:dashboard'))
-    # else:
-    #     calendar_form = CalendarForm()
-    #     context = {'calendar_form':calendar_form}
-    #     return render(request, 'account/create_calendar.html', context)
+# 我的
+def my_personal_data(request):
+    return HttpResponse('')
 
 
+def my_account(request):
+    return HttpResponse('')
