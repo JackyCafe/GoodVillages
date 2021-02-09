@@ -8,6 +8,7 @@
     {% if user.userprofile.photo %}
 
         <img src="{{ user.userprofile.photo.url }}" style="width:30%;height: 30%">
+    {% endif %}
         <form method="post" action="{% url 'app:vaild_my_person_task' %}">
         {% csrf_token %}
          <p>驗證碼:  <input type="password" id="pass" name="password"/>
@@ -16,5 +17,5 @@
          <p></p>
         <input type="submit" value="驗證">
         </form>
-    {% endif %}
+
 {% endblock %}
