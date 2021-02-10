@@ -7,10 +7,33 @@
     <div class="container">
         <div class="row" style="height:10%">
         <canvas id="myChart" ></canvas>
-            {{ points|safe }}
-        </div>
-        <div>
+        </div><div></div>
+        <div class="row">
+            <table>
+                <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>收入</th>
+                    <th>支出</th>
+                    <th>備註</th>
 
+                </tr>
+                </thead>
+                <tbody>
+                    {% for account in accounts %}
+                    <tr>
+                       <td>{{ account.transaction_date }}</td>
+                        <td>{{ account.deposit }}</td>
+                        <td>{{ account.withdraw }}</td>
+                        <td>{{ account.transaction_memo }}</td>
+
+
+                    </tr>
+
+                   {% endfor %}
+
+                </tbody>
+            </table>
         </div>
     </div>
 

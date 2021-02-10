@@ -812,7 +812,7 @@ def my_account(request):
 
     querysets = Account.objects.values('user')\
         .annotate(points=Sum('deposit')-Sum('withdraw')).order_by('-points')
-    accounts = []
+    accounts = Account.objects.filter(user=request.user.id).all()
     users = []
     points = []
     for queryset in querysets:
@@ -821,5 +821,5 @@ def my_account(request):
         point = queryset['points']
         users.append(user)
         points.append(point)
-    context = {'users':users,'points':points}
+    context = {'users':users,'points':points,'accounts':accounts}
     return render(request,'account/my_account.html',context)
