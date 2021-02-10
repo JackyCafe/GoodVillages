@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Count, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.urls import reverse
@@ -151,7 +152,11 @@ def edit_personal_data(request):
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.userprofile)
-        image = request.user.userprofile.photo.url
+        user = request.user
+        if user.userprofile.photo:
+            image = user.userprofile.photo.url
+        else:
+            image = None
         return render(request, 'account/edit.html', {'user_form': user_form,
                                                      'profile_form': profile_form,
                                                      'image':image})
@@ -797,12 +802,24 @@ def create_calendar(request):
                   )
 
 
-# 我的
-def my_personal_data(request):
-    user_id = request.session.get('user')
-    user = User.objects.get(id = user_id)
-    return HttpResponse('')
+
 
 
 def my_account(request):
-    return HttpResponse('')
+
+    # querysets = Account.objects.all().values('user').annotate(deposit=Sum('deposit')
+    #                                                           ,withdraw=Sum('withdraw')).all()
+
+    querysets = Account.objects.values('user')\
+        .annotate(points=Sum('deposit')-Sum('withdraw')).order_by('-points')
+    accounts = []
+    users = []
+    points = []
+    for queryset in querysets:
+        user_id = queryset['user']
+        user = User.objects.get(id=user_id).userprofile.actual_name
+        point = queryset['points']
+        users.append(user)
+        points.append(point)
+    context = {'users':users,'points':points}
+    return render(request,'account/my_account.html',context)

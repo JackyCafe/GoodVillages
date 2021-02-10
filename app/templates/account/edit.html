@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %} 編輯個人資料
 {% endblock %}
 
 {% block content %}
-    <h1></h1>
+
+    {% if image %}
     <img src="{{ image }}" style="width: 200px;height: 200px"/>
+    {% else %}
+        <img src="{% static 'drawable/personal.png' %}" style="width: 100px;height: 100px"/>
+
+    {% endif %}
     <form method="post" enctype="multipart/form-data">
     {{ user_form.as_p }}
     {{ profile_form.as_p }}
