@@ -5,27 +5,22 @@
 {% endblock %}
 {% block content %}
      <div class="container">
-     <div class="row">  <div class="card-columns">
-        {% for task in tasks %}
+     <div class="row">
+        {% for task in team_tasks %}
               <div class="card">
                 <div class="card-header ">
-                   {{ task.group_name }}
-
-
+                   {{ task.task_name }}
                 </div>
                <div class="card-body">
             <div class="card-text">
-                 </div> </div>
-              {{ task.task.task_content|safe }}
-                  <p> 目前成員
-                  {% for user in task.users %}
-                     <p></p> {{ user }}
-                  {% endfor %}
+                <img  src="{{ task.photo.url }}" class="card-img-top mx-auto d-block" style="width: 20%;height: 20%" >
+                {{ task.task_content|safe }}
+                <p></p>
 
-                <div class="card-footer">
-                 發布日期　{{ task.task.publish }}<p></p>
-                    <a href="{% url 'app:add_teamtask' request.user.id  task.group_id  %}" class="button btn">參加</a>
-                    <a href="{{ task.task.generate_team_qr_code  }} " class='button btn'>驗證</a>
+            </div> </div>
+                  <div class="card-footer">
+                 發布日期　{{ task.publish }}       累積點數/目標點數：{{ task.award }}/{{ task.point }}
+                    <p></p>  <a href="{% url 'app:team_task_proposal' request.user.id task.id    %}" class="button btn">贊助方案</a>
 
             </div>
 

@@ -39,16 +39,24 @@ urlpatterns = [
     path('vaild_my_person_task/',views.vaild_my_person_task,name='vaild_my_person_task'),
 
     #團隊任務 2021/01/28 mark
+    path('create_team_tasks/', views.create_team_tasks, name='create_team_tasks'), # admin ->create team task
+    path('team_task_list/',views.team_task_list,name = 'team_task_list'),
     path('my_team_tasks_link/', views.my_team_tasks_link, name='my_team_tasks_link'), #在工具列中點選，看出還有幾個任務可加入
-    path('add_teamtask/<int:user_id>/<int:group_id>',views.add_teamtask,name='add_teamtask'),
+    path('add_teamtask/<int:user_id>/<int:group_id>',views.add_teamtask,name='add_teamtask'),#舊版本我要加入
+    path('add_sub_team_task/<int:year>/<int:month>/<int:day>/<slug:task>/', views.add_sub_team_task, name='add_sub_team_task'),  # 新增子任務方案
+    path('sub_teamtask_list/',views.sub_teamtask_list,name='sub_teamtask_list'), # 團隊子任務列表
+    path('validTeamTask/<int:year>/<int:month>/<int:day>/<slug:task>/<int:vaild>', views.invalidTeamTask, name='invalidTeamTask'),  # 團隊任務失效
+    path('invalidTeamTask/<int:year>/<int:month>/<int:day>/<slug:task>/<int:vaild>', views.invalidTeamTask, name='invalidTeamTask'),  # 團隊任務生效
     path('generate_team_qr_code/<int:id>/<slug:task>', views.generate_team_qr_code, name='generate_team_qr_code'),
     path('update_team_task/<int:id>/<slug:task>', views.update_team_task, name='update_team_task'),
+    path('team_task_proposal/<int:user_id>/<int:task_id>/',views.team_task_proposal,name = 'team_task_proposal'),#贊助活動
+    path('participate_team_task/<int:user_id>/<int:task_id>/',views.participate_team_task_proposal,name = 'participate_team_task'),#贊助活動
+
 
     # path('confirm_teamtask/',views.confirm_teamtask,name = 'confirm_teamtask'),
     # path('create_team_tasks/', views.my_team_tasks_link, name='create_team_tasks'),
     # path('create_group/', views.create_group, name='create_group'),
     # path('manage_team_task/<int:task_id>/<int:group_id>/<int:user_id>/', views.manage_team_task, name='manage_team_task'),
-    path('create_team_tasks/', views.create_team_tasks, name='create_team_tasks'), # admin ->create team task
     #懸賞任務
     path('manage_award_task/', views.manage_award_task, name='manage_award_task'),#懸賞主頁
     path('create_award_task',views.create_award_task, name= 'create_award_task'),# 發布任務

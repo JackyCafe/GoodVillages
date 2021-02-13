@@ -4,6 +4,7 @@
     {% if request.session.authority == 'admin' or  request.session.authority == 'servant' %}
     <a href="{% url 'app:create_work_task' %}" class="btn btn-info left mr-2">發布任務</a>
     {% endif %}
+
              <div class="card-columns">
 
     {% for task in tasks %}

@@ -5,7 +5,7 @@ from django.utils.datastructures import MultiValueDict
 from django.utils.safestring import mark_safe
 
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyAwardTask, WorkTask, Account, Event, \
-    Calendars, MyWorkTask
+    Calendars, MyWorkTask, SubTeamTask
 
 
 # Login
@@ -117,12 +117,23 @@ class CreateTeamTaskForm(forms.ModelForm):
 
     class Meta:
         model = TeamTask
-        fields = ('task_name','task_content','start_date','end_date','point')
+        fields = ('task_name','task_content','start_date','end_date','photo','point')
 
         widgets = {
             'start_date': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
             'end_date': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
         }
+
+
+class CreateSubTeamForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(CreateSubTeamForm,self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta:
+        model = SubTeamTask
+        fields = ('task_name','task_content','point')
 
 #開群組
 class CreateGroupForm(forms.ModelForm):

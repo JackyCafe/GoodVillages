@@ -30,7 +30,7 @@
         <td data-th ="點數">{{ task.point|safe }}</td>
 
 {#            <td><a href="{{ task.addSubTask_url }}" class="button btn-danger">創建子任務</a></td>#}
-            <td data-th="功能"><a href="{{ task.task_edit}}" class="button btn-danger">編輯主任務</a></td>
+            <td data-th="功能"><a href="{{ task.task_edit}}" class="button btn-danger">編輯</a></td>
             {% if task.is_vaild == 1 %}
             <td data-th="功能"><a href="{{ task.invalidTask_url  }}" class="button">任務失效</a></td>
             {% else %}

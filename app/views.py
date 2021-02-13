@@ -15,9 +15,9 @@ from django.views import generic
 
 from app.forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, TaskForm, SubTaskForm, \
     PersonalTaskForm, CreateTeamTaskForm, CreateGroupForm, MyAwardTaskForm, WorkTaskForm, AccountForm, EventForm, \
-    MyWorkTaskForm
+    MyWorkTaskForm, CreateSubTeamForm
 from app.models import UserProfile, Task, SubTask, PersonalTask, TeamTask, Group, MyTeamTask, MyAwardTask, WorkTask, \
-    MyWorkTask, Account, Event,Calendars
+    MyWorkTask, Account, Event, Calendars, SubTeamTask
 import random
 import logging
 import calendar
@@ -51,7 +51,7 @@ def dashboard(request):
 
     d = get_date(request.GET.get('month', None))
     log(d)
-    calendars = Event.objects.filter(start_time__gt=d)
+    calendars = Event.objects.filter(start_time__gte=d)
     cal = Calendar(d.year, d.month)
     html_cal = cal.formatmonth(user_id=user_id,withyear=True)
     context = {
@@ -372,81 +372,122 @@ def create_team_tasks(request):
     user = request.session.get('user')
     user_id = User.objects.get(id=user).userprofile
     if request.method == 'POST':
-        create_team_task_form = CreateTeamTaskForm(request.POST)
+        create_team_task_form = CreateTeamTaskForm(request.POST,request.FILES)
         if create_team_task_form.is_valid():
             cd = create_team_task_form.cleaned_data
             team_task = TeamTask.objects.create(**cd)
             team_task.save()
             group = Group(owner=user_id,group_name=team_task.task_name,task=team_task,is_active=True)
             group.save()
-            return HttpResponse("新增團隊任務完成")
+            return redirect('app:team_task_list')
+
     else:
         create_team_task_form = CreateTeamTaskForm()
         context = {'create_team_task_form':create_team_task_form}
         return render(request,'account/create_team_task.html',context)
 
 
+def team_task_list(request):
+    team_tasks = TeamTask.objects.all()
+    context = {'team_tasks':team_tasks}
+    return render(request,'account/team_tasks.html',context)
+
+
+
+
+#2021/02/11 封印
+# def create_sub_team_task(request):
+#     create_sub_team_task: CreateSubTeamForm
+#     sub_team_task:SubTeamTask
+#     team_task:TeamTask
+#     if request.method == 'POST':
+#        team_task = T
+#
+#     else:
+#         create_sub_team_task = CreateSubTeamForm()
+#         context = {'sub_team_task':create_sub_team_task}
+#         return render(request,'account/create_sub_form.html',context)
+
+# 任務生效或失效
+def invalidTeamTask(request, year, month, day, task, vaild):
+    task = get_object_or_404(TeamTask, slug=task, publish__year=year,
+                             publish__month=month,
+                             publish__day=day)
+    log(task)
+    task.is_vaild = vaild
+    task.save()
+    # return HttpResponse('Ma~')
+    return redirect(reverse('app:team_task_list'))
+
+
+
+
+
+# def my_team_tasks_link(request):
+#     user_id = request.session.get('user')
+#     users = []
+#     task_set={}
+#     tasks=[]
+#     groups = Group.objects.all()
+#     for group in groups:
+#         users = []
+#         idset=group.group.values('user_id')
+#         for ids in idset:
+#             id = ids['user_id']
+#             users.append(UserProfile.objects.get(id =id))
+#         task_set={'group_name':group,'group_id':group.id,'users':users
+#             ,'task':group.task}
+#         tasks.append(task_set)
+#     context = {'tasks':tasks}
+#     # 計算獎勵
+#     # 1. 找出team_task finish >0
+#     # 2. 找出相對group 的user
+#     # 3. 找出 my_team_task.is_award = False
+#     # 4. 點數轉入個人帳戶.
+#     # 5. my_team_task.is_award = True
+#
+#     # teams_id = TeamTask.objects.filter(finish_date__isnull=False).values('group__group')
+#     teams = TeamTask.objects.filter(finish_date__isnull=False)
+#     point = teams.values('point')
+#     teams_id = list(teams.values('group__group'))
+#     for id in teams_id:
+#         user_obj = MyTeamTask.objects.filter(id = id['group__group']).filter(is_award=False)
+#
+#         profile_ids = user_obj.values('user__userprofile')
+#         try:
+#             id = user_obj.values('id')[0]
+#             for profile in profile_ids:
+#                 profile = UserProfile.objects.get(id = profile['user__userprofile'])
+#                 account = Account.objects.create(user=profile, deposit=point,
+#                                              transaction_date=datetime.now(),
+#                                              transaction_memo='團隊任務')
+#                 account.save()
+#
+#             task = MyTeamTask.objects.get(id = id['id'])
+#             task.is_award = True
+#             task.save()
+#         except:
+#             pass
+#         # 點數轉入個人帳戶.
+#     # for pt in ptasks:
+#     #     log(pt)
+#         # task_id = person_task['id']
+#         # # 把personal is_award update 為True
+#         # task = PersonalTask.objects.get(id=task_id)
+#         # task.is_award = True
+#         # task.save()
+#         # # 新增至個人帳號
+#         # account = Account.objects.create(user=user.userprofile, deposit=int(person_task['point']),
+#         #                                  transaction_date=datetime.now(),
+#         #                                  transaction_memo='工作任務')
+#         # account.save()
+#
+#     return render(request,'account/my_team_task.html',context)
+
 def my_team_tasks_link(request):
-    user_id = request.session.get('user')
-    users = []
-    task_set={}
-    tasks=[]
-    groups = Group.objects.all()
-    for group in groups:
-        users = []
-        idset=group.group.values('user_id')
-        for ids in idset:
-            id = ids['user_id']
-            users.append(UserProfile.objects.get(id =id))
-        task_set={'group_name':group,'group_id':group.id,'users':users
-            ,'task':group.task}
-        tasks.append(task_set)
-    context = {'tasks':tasks}
-    # 計算獎勵
-    # 1. 找出team_task finish >0
-    # 2. 找出相對group 的user
-    # 3. 找出 my_team_task.is_award = False
-    # 4. 點數轉入個人帳戶.
-    # 5. my_team_task.is_award = True
-
-    # teams_id = TeamTask.objects.filter(finish_date__isnull=False).values('group__group')
-    teams = TeamTask.objects.filter(finish_date__isnull=False)
-    point = teams.values('point')
-    teams_id = list(teams.values('group__group'))
-    for id in teams_id:
-        user_obj = MyTeamTask.objects.filter(id = id['group__group']).filter(is_award=False)
-
-        profile_ids = user_obj.values('user__userprofile')
-        try:
-            id = user_obj.values('id')[0]
-            for profile in profile_ids:
-                profile = UserProfile.objects.get(id = profile['user__userprofile'])
-                account = Account.objects.create(user=profile, deposit=point,
-                                             transaction_date=datetime.now(),
-                                             transaction_memo='團隊任務')
-                account.save()
-
-            task = MyTeamTask.objects.get(id = id['id'])
-            task.is_award = True
-            task.save()
-        except:
-            pass
-        # 點數轉入個人帳戶.
-    # for pt in ptasks:
-    #     log(pt)
-        # task_id = person_task['id']
-        # # 把personal is_award update 為True
-        # task = PersonalTask.objects.get(id=task_id)
-        # task.is_award = True
-        # task.save()
-        # # 新增至個人帳號
-        # account = Account.objects.create(user=user.userprofile, deposit=int(person_task['point']),
-        #                                  transaction_date=datetime.now(),
-        #                                  transaction_memo='工作任務')
-        # account.save()
-
+    team_tasks = get_list_or_404(TeamTask,is_vaild=True)
+    context = {'team_tasks':team_tasks}
     return render(request,'account/my_team_task.html',context)
-
 
 def add_teamtask(request,user_id,group_id):
     group = Group.objects.get(id = group_id)
@@ -823,3 +864,59 @@ def my_account(request):
         points.append(point)
     context = {'users':users,'points':points,'accounts':accounts}
     return render(request,'account/my_account.html',context)
+
+
+
+
+def add_sub_team_task(request,year,month,day,task):
+    create_sub_team_form : CreateSubTeamForm
+    sub_team:SubTeamTask
+    task = get_object_or_404(TeamTask, slug=task, publish__year=year,
+                             publish__month=month,
+                             publish__day=day)
+    if request.method =='POST':
+        create_sub_team_form = CreateSubTeamForm(request.POST)
+        if create_sub_team_form.is_valid():
+            sub_team = create_sub_team_form.save(commit=False)
+            sub_team.task = task
+            sub_team.save()
+            return HttpResponseRedirect(reverse('app:sub_teamtask_list'))
+    else:
+        sub_team_form =  CreateSubTeamForm()
+        context = {'sub_team_form':sub_team_form}
+
+    return render(request,'account/add_sub_teamtask.html',context)
+
+
+def sub_teamtask_list(request):
+    sub_teams = SubTeamTask.objects.all()
+    context = {'sub_teams':sub_teams}
+    return render(request,'account/sub_teamtask_list.html',context)
+
+#團隊任務的方案總覽
+def team_task_proposal(request,user_id,task_id):
+    tasks = get_object_or_404(TeamTask,id=task_id)
+    try:
+        sub_tasks = get_list_or_404(SubTeamTask,task = task_id)
+        context = {'tasks':tasks,'sub_tasks':sub_tasks}
+        return render(request, 'account/team_task_proposal.html', context)
+    except Exception as e:
+        return HttpResponse('尚未公布方案'+e.__str__())
+
+
+def participate_team_task_proposal(request,user_id,task_id):
+    user = User.objects.get(id = user_id)
+    try:
+        task = get_object_or_404(SubTeamTask,id = task_id)
+        point = task.point
+        account = Account.objects.create(user = user.userprofile,withdraw=int(point),transaction_date=datetime.now(),
+                                         transaction_memo='團隊任務')
+        account.save()
+        teamtask = get_object_or_404(TeamTask,id = task.task.id)
+        teamtask.award = teamtask.award+point
+        teamtask.save()
+
+    except Exception as e:
+        return HttpResponse(e.__str__())
+
+    return HttpResponse(teamtask)

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+    團隊方案列表
+{% endblock %}
+{% block content %}
+    <table class="table" width="98%">
+        <thead>
+        <tr>
+            <th>方案名稱</th>
+            <th>方案內容</th>
+            <th>團隊任務</th>
+            <th>贊助點數</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in sub_teams %}
+            <tr>
+                <td width="10%">{{ task.task_name }}</td>
+                <td width="10%"> {{ task.task_content|safe }}</td>
+                <td width="10%">{{ task.task }}</td>
+                <td width="10%">{{ task.point }}</td>
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}
+  新增團隊方案
+{% endblock %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ sub_team_form.media }}
+        {{sub_team_form  }}
+        <input type="submit" value="新增子任務">
+    </form>
+{% endblock %}

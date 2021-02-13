@@ -144,7 +144,22 @@ class TeamTask(models.Model):
     start_date = models.DateField(auto_now_add=False,verbose_name='活動開始時間',null=True)
     end_date = models.DateField(auto_now_add=False,verbose_name='活動結束時間',null=True)
     finish_date = models.DateField(auto_now_add=False,verbose_name='活動結束時間',null=True)
-    point = models.IntegerField(default=0,verbose_name='點數')
+    photo = models.ImageField(upload_to='teamtask/%Y/%m/%d/', null=True, blank=True, verbose_name='活動照片')
+    point = models.IntegerField(default=0,verbose_name='需求點數')
+    award = models.IntegerField(default=0,verbose_name='獎勵點數')
+    is_vaild  = models.BooleanField(default=True)
+
+    #新增次要任務
+    def addSubTeamTask_url(self):
+        return reverse('app:add_sub_team_task', args=[self.publish.year, self.publish.month, self.publish.day, self.slug])
+
+    def invalidTeamTask_url(self):
+        if self.is_vaild == True:
+            return reverse('app:invalidTeamTask', args=[self.publish.year, self.publish.month, self.publish.day, self.slug, 0])
+        else:
+            return reverse('app:invalidTeamTask',
+                           args=[self.publish.year, self.publish.month, self.publish.day, self.slug, 1])
+
 
 
     def generate_team_qr_code(self):
@@ -155,6 +170,15 @@ class TeamTask(models.Model):
 
     def __str__(self):
        return self.task_name
+
+
+class SubTeamTask(models.Model):
+    task_name = models.CharField(max_length=32,verbose_name='方案名稱',null=True)
+    task_content = RichTextField(verbose_name='方案內容',null = True)
+    task = models.ForeignKey(TeamTask,on_delete=models.CASCADE,related_name='task')
+    slug = RandomCharField(length=32, unique=True, unique_for_date='publish')
+    publish = models.DateField(auto_now=True, verbose_name='任務發布時間')
+    point = models.IntegerField(default=0,verbose_name='方案支付點數')
 
 
 #

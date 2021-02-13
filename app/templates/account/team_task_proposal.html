@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}
+    參與方案
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card-columns">
+                {% for sub_task in sub_tasks %}
+                <div class="card">
+                    <div class="card-header ">團隊任務：{{ tasks }} </div>
+                        <div class="card-body">
+                           任務內容： {{ tasks.task_content|safe }}
+                            <p>
+                                <hr>
+                             專案名稱：{{ sub_task.task_name|safe }}
+                            </p>
+                            <p>
+                              專案內容：{{ sub_task.task_content|safe }}
+                            </p>
+                            <p><hr>
+                             參與點數：{{ sub_task.point }}
+                            </p>
+                        </div>
+                        <div class="footer"><a href="{% url 'app:participate_team_task' request.user.id sub_task.id %}" class="button btn">參加</a> </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+
+    </div>
+
+{% endblock %}
